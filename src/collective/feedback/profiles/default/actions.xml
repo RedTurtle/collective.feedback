@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<object xmlns:i18n="http://xml.zope.org/namespaces/i18n"
+        meta_type="Plone Actions Tool"
+        name="portal_actions"
+>
+
+  <object meta_type="CMF Action Category"
+          name="user"
+  >
+    <object meta_type="CMF Action"
+            name="feedback-dashboard"
+            i18n:domain="plone"
+    >
+      <property name="title"
+                i18n:translate=""
+      >Feedback dashboard</property>
+      <property name="url_expr">string:${globals_view/navigationRootUrl}/feedback-dashboard</property>
+      <property name="link_target" />
+      <property name="icon_expr" />
+      <property name="permissions">
+        <element value="collective.feedback: Manage Feedbacks" />
+      </property>
+      <property name="visible">True</property>
+    </object>
+  </object>
+
+</object>

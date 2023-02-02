@@ -1,0 +1,5 @@
+===================
+collective.feedback
+===================
+
+User documentation

@@ -1,0 +1,14 @@
+<configure
+    xmlns="http://namespaces.zope.org/zope"
+    xmlns:plone="http://namespaces.plone.org/plone"
+    i18n_domain="collective.feedback"
+    >
+
+  <!-- register the catalog -->
+  <utility
+      factory=".catalog.FeedbackSoupCatalogFactory"
+      provides="souper.interfaces.ICatalogFactory"
+      name="feedback_soup"
+      />
+  <utility factory=".store.FeedbackStore" />
+</configure>

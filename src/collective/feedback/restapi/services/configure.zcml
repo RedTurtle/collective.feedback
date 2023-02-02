@@ -1,0 +1,40 @@
+<configure
+    xmlns="http://namespaces.zope.org/zope"
+    xmlns:plone="http://namespaces.plone.org/plone"
+    xmlns:zcml="http://namespaces.zope.org/zcml"
+    >
+
+  <plone:service
+      method="POST"
+      factory=".add.FeedbackAdd"
+      for="plone.dexterity.interfaces.IDexterityContent"
+      permission="collective.feedback.AddFeedback"
+      layer="collective.feedback.interfaces.ICollectiveFeedbackLayer"
+      name="@feedback-add"
+      />
+  <plone:service
+      method="GET"
+      factory=".get.FeedbackGet"
+      for="plone.app.layout.navigation.interfaces.INavigationRoot"
+      permission="collective.feedback.AccessFeedbacks"
+      layer="collective.feedback.interfaces.ICollectiveFeedbackLayer"
+      name="@feedback"
+      />
+  <plone:service
+      method="GET"
+      factory=".get.FeedbackGetCSV"
+      for="plone.app.layout.navigation.interfaces.INavigationRoot"
+      permission="collective.feedback.AccessFeedbacks"
+      layer="collective.feedback.interfaces.ICollectiveFeedbackLayer"
+      name="@feedback-csv"
+      />
+  <plone:service
+      method="DELETE"
+      factory=".delete.FeedbackDelete"
+      for="plone.app.layout.navigation.interfaces.INavigationRoot"
+      permission="collective.feedback.ManageFeedbacks"
+      layer="collective.feedback.interfaces.ICollectiveFeedbackLayer"
+      name="@feedback-delete"
+      />
+
+</configure>
