@@ -1,3 +1,4 @@
+from collective.feedback.interfaces import ICollectiveFeedbackStore
 from plone.protect.interfaces import IDisableCSRFProtection
 from plone.restapi.services import Service
 from zExceptions import BadRequest
@@ -10,8 +11,11 @@ class FeedbackDelete(Service):
 
     def reply(self):
         alsoProvides(self.request, IDisableCSRFProtection)
-        tool = getUtility(self.store)
+        tool = getUtility(ICollectiveFeedbackStore)
 
+        # import pdb
+        #
+        # pdb.set_trace()
         if self.id:
             try:
                 self.id = int(self.id)

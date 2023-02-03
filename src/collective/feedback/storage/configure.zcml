@@ -10,5 +10,5 @@
       provides="souper.interfaces.ICatalogFactory"
       name="feedback_soup"
       />
-  <utility factory=".store.FeedbackStore" />
+  <utility factory=".store.CollectiveFeedbackStore" />
 </configure>

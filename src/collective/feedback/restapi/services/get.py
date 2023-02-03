@@ -17,8 +17,8 @@ class FeedbackGet(Service):
     """Service for getting feedbacks"""
 
     def reply(self):
-        if self.id:
-            results = self.get_single_object_feedbacks()
+        if uid := self.request.form.get("uid", None):
+            results = self.get_single_object_feedbacks(uid)
             batch = HypermediaBatch(self.request, results)
             data = {
                 "@id": batch.canonical_url,
@@ -72,16 +72,33 @@ class FeedbackGet(Service):
 
         if not obj:
             return
+
         if not api.user.has_permission(
             "rer.customersatisfaction: Access Customer Satisfaction", obj=obj
         ):
             # user does not have that permission on object
             return
-        return
 
-    def get_single_object_feedbacks(self):
+        return obj
+
+    def get_single_object_feedbacks(self, uid):
         tool = getUtility(ICollectiveFeedbackStore)
-        return tool.search(query={"uid": self.id})
+        results = tool.search(query={"uid": uid})
+        feedbacks = []
+
+        for record in results:
+            feedbacks.append(
+                {
+                    "uid": record._attrs.get("uid", ""),
+                    "date": record._attrs.get("date", ""),
+                    "vote": record._attrs.get("vote", ""),
+                    "answer": record._attrs.get("answer", ""),
+                    "comment": record._attrs.get("comment", ""),
+                    "title": record._attrs.get("title", ""),
+                }
+            )
+
+        return feedbacks
 
     def get_data(self):
         tool = getUtility(ICollectiveFeedbackStore)
@@ -110,7 +127,6 @@ class FeedbackGet(Service):
                     "comments": 0,
                     "title": feedback._attrs.get("title", ""),
                     "uid": uid,
-                    "review_ids": [],
                 }
 
                 if obj:
@@ -122,13 +138,13 @@ class FeedbackGet(Service):
             # vote avg
             data = feedbacks[uid]
             data["vote_num"] += 1
-            data["vota_sum"] += vote
+            data["vote_sum"] += vote
 
             # number of comment
             comment = feedback._attrs.get("comment", "")
             answer = feedback._attrs.get("answer", "")
             if comment or answer:
-                data["comments"] += 0
+                data["comments"] += 1
 
             # last date comment
             if not data.get("last_vote", None):
@@ -138,8 +154,8 @@ class FeedbackGet(Service):
                     data["last_vote"] = date
 
         # avg calculation
-        for feedback in feedbacks:
-            feedback["vote"] = feedback["vote_sum"] / feedback["vote_num"]
+        for uid, feedback in feedbacks.items():
+            feedback["vote"] = feedback.pop("vote_sum") / feedback.pop("vote_num")
 
         result = list(feedbacks.values())
 

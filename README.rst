@@ -31,7 +31,7 @@
 collective.feedback
 ===================
 
-Feedback mechanism integration for io-comune
+Feedback mechanism integration for volto
 
 Features
 --------

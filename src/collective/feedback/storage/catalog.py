@@ -24,3 +24,5 @@ class FeedbackSoupCatalogFactory(object):
 
         date_indexer = NodeAttributeIndexer("date")
         catalog["date"] = CatalogFieldIndex(date_indexer)
+
+        return catalog

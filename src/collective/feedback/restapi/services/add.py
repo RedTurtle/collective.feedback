@@ -17,7 +17,8 @@ class FeedbackAdd(Service):
 
     def reply(self):
         alsoProvides(self.request, IDisableCSRFProtection)
-        form_data = self.validate_form(form_data=self.request)
+        form_data = json_body(self.request)
+        self.validate_form(form_data=form_data)
         data = self.extract_data(form_data=form_data)
         tool = getUtility(self.store)
         try:
@@ -52,14 +53,12 @@ class FeedbackAdd(Service):
                 raise BadRequest("Campo obbligatorio mancante: {}".format(field))
 
     def extract_data(self, form_data):
-        data = json_body(self.request)
-
         context_state = api.content.get_view(
             context=self.context,
             request=self.request,
             name="plone_context_state",
         )
         context = context_state.canonical_object()
-        data["uid"] = context.UID()
-        data["title"] = context.Title()
-        return data
+        form_data.update({"uid": context.UID()})
+        form_data.update({"title": context.Title()})
+        return form_data
