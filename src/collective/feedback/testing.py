@@ -8,6 +8,9 @@ from plone.app.testing import PloneSandboxLayer
 from plone.testing import z2
 
 import collective.feedback
+import plone.app.dexterity
+import plone.restapi
+import repoze.catalog
 
 
 class CollectiveFeedbackLayer(PloneSandboxLayer):
@@ -17,12 +20,10 @@ class CollectiveFeedbackLayer(PloneSandboxLayer):
         # Load any other ZCML that is required for your tests.
         # The z3c.autoinclude feature is disabled in the Plone fixture base
         # layer.
-        import plone.app.dexterity
 
         self.loadZCML(package=plone.app.dexterity)
-        import plone.restapi
-
         self.loadZCML(package=plone.restapi)
+        self.loadZCML(package=repoze.catalog)
         self.loadZCML(package=collective.feedback)
 
     def setUpPloneSite(self, portal):
