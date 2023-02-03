@@ -9,16 +9,28 @@ from plone.restapi.serializer.converters import json_compatible
 from plone.restapi.services import Service
 from six import StringIO
 from zope.component import getUtility
+from zope.interface import implementer
+from zope.publisher.interfaces import IPublishTraverse
 
 import csv
 
 
+@implementer(IPublishTraverse)
 class FeedbackGet(Service):
     """Service for getting feedbacks"""
 
+    def __init__(self, context, request):
+        super().__init__(context, request)
+        self.params = []
+
+    def publishTraverse(self, request, name):
+        # Consume any path segments after /@users as parameters
+        self.params.append(name)
+        return self
+
     def reply(self):
-        if uid := self.request.form.get("uid", None):
-            results = self.get_single_object_feedbacks(uid)
+        if self.params:
+            results = self.get_single_object_feedbacks(self.params[0])
             batch = HypermediaBatch(self.request, results)
             data = {
                 "@id": batch.canonical_url,
