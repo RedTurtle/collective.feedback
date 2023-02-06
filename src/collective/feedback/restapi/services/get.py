@@ -167,15 +167,17 @@ class FeedbackGet(Service):
 
         # avg calculation
         for uid, feedback in feedbacks.items():
-            feedback["vote"] = feedback.pop("vote_sum") / feedback.pop("vote_num")
+            feedback["vote"] = feedback.pop("vote_sum") / feedback.pop(
+                "vote_num"
+            )
 
         result = list(feedbacks.values())
 
         # sort
-        sort_on = self.request.form.get("sort_on", "last_date")
+        sort_on = self.request.form.get("sort_on", "last_vote")
         sort_order = self.request.form.get("sort_order", "desc")
         reverse = sort_order.lower() in ["desc", "descending", "reverse"]
-        if sort_on in ["ok", "nok", "title", "last_vote", "comments"]:
+        if sort_on in ["vote", "title", "last_vote", "comments"]:
             result = sorted(result, key=lambda k: k[sort_on], reverse=reverse)
 
         return result
@@ -197,7 +199,9 @@ class FeedbackGetCSV(FeedbackGet):
                         message="Unable export. Contact site manager.",
                     )
                 )
-        self.request.response.setHeader("Content-Type", "text/comma-separated-values")
+        self.request.response.setHeader(
+            "Content-Type", "text/comma-separated-values"
+        )
         now = datetime.now()
         self.request.response.setHeader(
             "Content-Disposition",
