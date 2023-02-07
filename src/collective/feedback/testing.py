@@ -10,6 +10,7 @@ from plone.testing import z2
 import collective.feedback
 import plone.app.dexterity
 import plone.restapi
+import souper.plone
 
 
 class CollectiveFeedbackLayer(PloneSandboxLayer):
@@ -23,6 +24,7 @@ class CollectiveFeedbackLayer(PloneSandboxLayer):
         self.loadZCML(package=plone.app.dexterity)
         self.loadZCML(package=plone.restapi)
         self.loadZCML(package=collective.feedback)
+        self.loadZCML(package=souper.plone)
 
     def setUpPloneSite(self, portal):
         applyProfile(portal, "collective.feedback:default")
