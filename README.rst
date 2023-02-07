@@ -2,16 +2,6 @@
    If you want to learn more about writing documentation, please check out: http://docs.plone.org/about/documentation_styleguide.html
    This text does not appear on pypi or github. It is a comment.
 
-.. image:: https://github.com/collective/collective.feedback/actions/workflows/plone-package.yml/badge.svg
-    :target: https://github.com/collective/collective.feedback/actions/workflows/plone-package.yml
-
-.. image:: https://coveralls.io/repos/github/collective/collective.feedback/badge.svg?branch=main
-    :target: https://coveralls.io/github/collective/collective.feedback?branch=main
-    :alt: Coveralls
-
-.. image:: https://codecov.io/gh/collective/collective.feedback/branch/master/graph/badge.svg
-    :target: https://codecov.io/gh/collective/collective.feedback
-
 .. image:: https://img.shields.io/pypi/v/collective.feedback.svg
     :target: https://pypi.python.org/pypi/collective.feedback/
     :alt: Latest Version
@@ -31,33 +21,71 @@
 collective.feedback
 ===================
 
-Feedback mechanism integration for volto
+Feedback mechanism integration for volto.
 
-Features
---------
+Users can add vote and a comment to every page on the site.
 
-- Can be bullet points
+Bot protection
+==============
 
+This product use `collective.honeypot <https://pypi.org/project/collective.honeypot/>`_ to prevent bot submissions.
 
-Examples
---------
+You just need to set two environment variables:
 
-This add-on can be seen in action at the following sites:
-- Is there a page on the internet where everybody can see the features?
+- *EXTRA_PROTECTED_ACTIONS feedback-add*
+- *HONEYPOT_FIELD xxx*
 
+xxx should be a field name that bot should compile.
 
-Documentation
--------------
+If you get hacked, you could simply change that variable.
 
-Full documentation for end users can be found in the "docs" folder, and is also available online at http://docs.plone.org/foo/bar
+Permissions
+===========
 
+There are two new specific permission:
 
-Translations
-------------
+- collective.feedback.ManageFeedbacks (collective.feedback: Manage Feedbacks) Allows to reset data (by default Manager and Site Administrator).
+- collective.feedback.AccessFeedbacks (collective.feedback: Access Feedbacks) Allows users to list feedbacks on contents where they have that permission (by default Editor, Manager and Site Administrator)
 
-This product has been translated into
+Feedbacks catalog
+=================
 
-- Klingon (thanks, K'Plai)
+Reviews are stored inside an internal catalog (based on `souper.plone <https://pypi.org/project/souper.plone/>`_).
+
+You can access/edit data through restapi routes (see below) or through a Plone utility::
+
+    from zope.component import getUtility
+    from collective.feedback.interfaces import ICollectiveFeedbackStore
+
+    tool = getUtility(ICollectiveFeedbackStore)
+
+Add a vote
+----------
+
+- Method ``add``
+- Parameters: ``data`` (dictionary with parameters)
+- Response: unique-id of new record
+
+``data`` should be a dictionary with the following parameters:
+
+- uid [required]: the uid of the Plone content
+- vote [required]: the vote
+- answer: a custom string, like a comment
+- title: the title of the Plone content
+- comment: an optional comment
+
+Others parameters will be ignored.
+
+Search reviews
+--------------
+
+- Method ``search``
+- Parameters: ``query`` (dictionary with parameters), ``sort_index`` (default=date), ``reverse`` (default=False)
+- Response: a list of results
+
+``query`` is a dictionary of indexes where perform the search.
+
+Right now data is not indexed so search filters does not work. You only need to call search method to get all data.
 
 
 Installation
@@ -75,37 +103,22 @@ Install collective.feedback by adding it to your buildout::
 
 and then running ``bin/buildout``
 
-
-Authors
--------
-
-Provided by awesome people ;)
-
-
-Contributors
+Contribute
 ------------
 
-Put your name here, you deserve it!
+- Issue Tracker: https://github.com/RedTurtle/collective.feedback/issues
+- Source Code: https://github.com/RedTurtle/collective.feedback
 
-- ?
+Compatibility
+=============
 
+This product has been tested on Plone 6
 
-Contribute
-----------
+Authors
+=======
 
-- Issue Tracker: https://github.com/collective/collective.feedback/issues
-- Source Code: https://github.com/collective/collective.feedback
-- Documentation: https://docs.plone.org/foo/bar
+This product was developed by RedTurtle Technology team.
 
-
-Support
--------
-
-If you are having issues, please let us know.
-We have a mailing list located at: project@example.com
-
-
-License
--------
-
-The project is licensed under the GPLv2.
+.. image:: http://www.redturtle.net/redturtle_banner.png
+   :alt: RedTurtle Technology Site
+   :target: http://www.redturtle.net/
