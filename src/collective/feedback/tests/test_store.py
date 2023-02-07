@@ -10,7 +10,6 @@ import unittest
 
 
 class TestTool(unittest.TestCase):
-
     layer = COLLECTIVE_FEEDBACK_FUNCTIONAL_TESTING
 
     def setUp(self):
