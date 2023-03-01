@@ -5,13 +5,12 @@
 .. image:: https://img.shields.io/pypi/v/collective.feedback.svg
     :target: https://pypi.python.org/pypi/collective.feedback/
     :alt: Latest Version
-
 .. image:: https://img.shields.io/pypi/status/collective.feedback.svg
     :target: https://pypi.python.org/pypi/collective.feedback
     :alt: Egg Status
-
-.. image:: https://img.shields.io/pypi/pyversions/collective.feedback.svg?style=plastic   :alt: Supported - Python Versions
-
+.. image:: https://img.shields.io/pypi/pyversions/collective.feedback.svg?style=plastic
+    :target: https://pypi.python.org/pypi/collective.feedback
+    :alt: Supported - Python Versions
 .. image:: https://img.shields.io/pypi/l/collective.feedback.svg
     :target: https://pypi.python.org/pypi/collective.feedback/
     :alt: License
