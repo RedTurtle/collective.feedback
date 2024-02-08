@@ -12,6 +12,8 @@
 
   <include package=".storage" />
   <include package=".restapi" />
+  <include package=".upgrades" />
+
 
   <genericsetup:registerProfile
       name="default"

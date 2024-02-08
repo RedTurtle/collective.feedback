@@ -12,9 +12,13 @@
     <permission acquire="True"
                 name="collective.feedback: Access Feedbacks"
     >
+      <role name="Editor" />
       <role name="Manager" />
       <role name="Site Administrator" />
     </permission>
 
+    <permission acquire="True" name="collective.feedback: Feedbacks Overview">
+      <role name="Authenticated" />
+    </permission>
   </permissions>
 </rolemap>
