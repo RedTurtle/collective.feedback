@@ -13,10 +13,10 @@
         id="collective.feedback.AccessFeedbacks"
         title="collective.feedback: Access Feedbacks"
         />
-     <permission
+    <permission
         id="collective.feedback.FeedbacksOverview"
         title="collective.feedback: Feedbacks Overview"
         />
   </configure>
-  
+
 </configure>

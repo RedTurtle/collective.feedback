@@ -12,7 +12,7 @@
         title="Update rolemap"
         handler=".upgrades.update_rolemap"
         />
-     <genericsetup:upgradeStep
+    <genericsetup:upgradeStep
         title="Install dependencies"
         handler=".upgrades.to_1100"
         />
