@@ -1,11 +1,11 @@
 # -*- coding: utf-8 -*-
+from collective.feedback.interfaces import ICollectiveFeedbackStore
 from collective.feedback.testing import RESTAPI_TESTING
 from plone import api
 from plone.app.testing import setRoles
 from plone.app.testing import SITE_OWNER_NAME
 from plone.app.testing import SITE_OWNER_PASSWORD
 from plone.app.testing import TEST_USER_ID
-from collective.feedback.interfaces import ICollectiveFeedbackStore
 from plone.restapi.testing import RelativeSession
 from zope.component import getUtility
 

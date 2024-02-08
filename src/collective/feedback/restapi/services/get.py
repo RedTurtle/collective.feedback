@@ -1,5 +1,4 @@
 from AccessControl import Unauthorized
-from AccessControl import Unauthorized
 from collective.feedback.interfaces import ICollectiveFeedbackStore
 from copy import deepcopy
 from datetime import datetime

@@ -1,5 +1,7 @@
 # -*- coding: utf-8 -*-
+from collective.feedback.interfaces import ICollectiveFeedbackStore
 from collective.feedback.testing import RESTAPI_TESTING
+from datetime import datetime
 from plone import api
 from plone.app.testing import setRoles
 from plone.app.testing import SITE_OWNER_NAME
@@ -9,8 +11,6 @@ from plone.restapi.testing import RelativeSession
 from souper.soup import get_soup
 from souper.soup import Record
 from zope.component import getUtility
-from collective.feedback.interfaces import ICollectiveFeedbackStore
-from datetime import datetime
 
 import transaction
 import unittest

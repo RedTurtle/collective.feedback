@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+from collective.feedback.interfaces import ICollectiveFeedbackStore
 from collective.feedback.testing import RESTAPI_TESTING
 from datetime import datetime
 from plone import api
@@ -10,7 +11,6 @@ from plone.restapi.serializer.converters import json_compatible
 from plone.restapi.testing import RelativeSession
 from souper.soup import get_soup
 from souper.soup import Record
-from collective.feedback.interfaces import ICollectiveFeedbackStore
 from zope.component import getUtility
 
 import transaction
