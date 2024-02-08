@@ -1,20 +1,6 @@
 # -*- coding: utf-8 -*-
-from Acquisition import aq_base
-from collective.volto.blocksfield.field import BlocksField
-from copy import deepcopy
-from design.plone.policy.interfaces import IDesignPlonePolicySettings
-from design.plone.policy.setuphandlers import disable_searchable_types
-from design.plone.policy.setuphandlers import set_default_subsite_colors
-from design.plone.policy.utils import create_default_blocks
 from plone import api
 from plone.app.upgrade.utils import installOrReinstallProduct
-from plone.dexterity.utils import iterSchemata
-from plone.registry.interfaces import IRegistry
-from plone.restapi.behaviors import IBlocks
-from Products.CMFPlone.interfaces import IFilterSchema
-from Products.CMFPlone.interfaces import ISelectableConstrainTypes
-from zope.component import getUtility
-from zope.schema import getFields
 
 import logging
 
