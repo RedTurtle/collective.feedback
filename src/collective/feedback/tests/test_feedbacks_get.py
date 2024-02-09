@@ -216,14 +216,12 @@ class TestGet(unittest.TestCase):
         self.assertIn("actions", res)
 
     def test_users_with_permission_have_can_delete_feedbacks_action(self):
-
         response = self.api_session.get(self.url)
         res = response.json()
         self.assertIn("can_delete_feedbacks", res["actions"])
         self.assertTrue(res["actions"]["can_delete_feedbacks"])
 
     def test_users_without_permission_dont_have_can_delete_feedbacks_action(self):
-
         api_session = RelativeSession(self.portal_url)
         api_session.headers.update({"Accept": "application/json"})
         api_session.auth = ("global", "secret!!")

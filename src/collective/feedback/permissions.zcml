@@ -21,7 +21,7 @@
         id="collective.feedback.ShowDeletedFeedbacks"
         title="collective.feedback: Show Deleted Feedbacks"
         />
-      
+
   </configure>
 
 </configure>
