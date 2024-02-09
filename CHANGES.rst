@@ -14,6 +14,10 @@ Changelog
   [cekk]
 - Install souper.plone to have its control-panel in backend.
   [cekk]
+- Remove unused user action.
+  [cekk]
+- Add `actions` infos in @feedback endpoint, to let the frontend know what the user can do.
+  [cekk]
 
 1.0.0 (2023-02-16)
 ------------------

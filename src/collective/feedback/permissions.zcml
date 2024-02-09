@@ -6,8 +6,8 @@
 
   <configure zcml:condition="installed AccessControl.security">
     <permission
-        id="collective.feedback.ManageFeedbacks"
-        title="collective.feedback: Manage Feedbacks"
+        id="collective.feedback.DeleteFeedbacks"
+        title="collective.feedback: Delete Feedbacks"
         />
     <permission
         id="collective.feedback.AccessFeedbacks"
@@ -17,6 +17,11 @@
         id="collective.feedback.FeedbacksOverview"
         title="collective.feedback: Feedbacks Overview"
         />
+    <permission
+        id="collective.feedback.ShowDeletedFeedbacks"
+        title="collective.feedback: Show Deleted Feedbacks"
+        />
+      
   </configure>
 
 </configure>

@@ -44,7 +44,11 @@ class FeedbackGet(Service):
         if links:
             data["batching"] = links
 
+        data["actions"] = {"can_delete_feedbacks": self.can_delete_feedbacks()}
         return data
+
+    def can_delete_feedbacks(self):
+        return api.user.has_permission("collective.feedback: Delete Feedbacks")
 
     def fix_fields(self, data):
         """

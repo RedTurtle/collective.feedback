@@ -36,3 +36,8 @@ def update_controlpanel(context):
 
 def to_1100(context):
     installOrReinstallProduct(api.portal.get(), "souper.plone")
+    context.runAllImportStepsFromProfile("profile-collective.feedback:to_1100")
+
+    # remove broken action
+    if "feedback-dashboard" in context.portal_actions.user:
+        del context.portal_actions.user["feedback-dashboard"]

@@ -3,7 +3,7 @@
   <permissions>
 
     <permission acquire="True"
-                name="collective.feedback: Manage Feedbacks"
+                name="collective.feedback: Delete Feedbacks"
     >
       <role name="Manager" />
       <role name="Site Administrator" />
@@ -20,5 +20,11 @@
     <permission acquire="True" name="collective.feedback: Feedbacks Overview">
       <role name="Authenticated" />
     </permission>
+
+    <permission acquire="True" name="collective.feedback: Show Deleted Feedbacks">
+      <role name="Manager" />
+      <role name="Site Administrator" />
+    </permission>
+    
   </permissions>
 </rolemap>
