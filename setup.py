@@ -16,7 +16,7 @@ long_description = "\n\n".join(
 
 setup(
     name="collective.feedback",
-    version="1.0.1.dev0",
+    version="1.1.0",
     description="Feedback mechanism integration for io-comune",
     long_description=long_description,
     # Get more from https://pypi.org/classifiers/
