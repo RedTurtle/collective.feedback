@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 from collective.feedback.interfaces import ICollectiveFeedbackStore
-from collective.feedback.testing import COLLECTIVE_FEEDBACK_FUNCTIONAL_TESTING
+from collective.feedback.testing import FUNCTIONAL_TESTING
 from plone.app.testing import setRoles
 from plone.app.testing import TEST_USER_ID
 from zope.component import getUtility
@@ -10,7 +10,7 @@ import unittest
 
 
 class TestTool(unittest.TestCase):
-    layer = COLLECTIVE_FEEDBACK_FUNCTIONAL_TESTING
+    layer = FUNCTIONAL_TESTING
 
     def setUp(self):
         self.app = self.layer["app"]

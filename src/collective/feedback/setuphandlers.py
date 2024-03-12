@@ -9,6 +9,7 @@ class HiddenProfiles(object):
         """Hide uninstall profile from site-creation and quickinstaller."""
         return [
             "collective.feedback:uninstall",
+            "collective.feedback:to_1100",
         ]
 
     def getNonInstallableProducts(self):

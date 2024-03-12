@@ -23,39 +23,39 @@ class FeedbackGet(Service):
         super().__init__(context, request)
         self.params = []
 
-    def publishTraverse(self, request, name):
+    def publishTraverse(self, request, uid):
         # Consume any path segments after /@users as parameters
-        self.params.append(name)
+        self.params.append(uid)
         return self
 
     def reply(self):
         if self.params:
+            # single object detail
             results = self.get_single_object_feedbacks(self.params[0])
-            batch = HypermediaBatch(self.request, results)
-            data = {
-                "@id": batch.canonical_url,
-                "items": [self.fix_fields(x, "date") for x in batch],
-                "items_total": batch.items_total,
-            }
-            links = batch.links
-            if links:
-                data["batching"] = links
         else:
             results = self.get_data()
-            batch = HypermediaBatch(self.request, results)
-            data = {
-                "@id": batch.canonical_url,
-                "items": [self.fix_fields(x, "last_vote") for x in batch],
-                "items_total": batch.items_total,
-            }
-            links = batch.links
-            if links:
-                data["batching"] = links
+        batch = HypermediaBatch(self.request, results)
+        data = {
+            "@id": batch.canonical_url,
+            "items": [self.fix_fields(data=x) for x in batch],
+            "items_total": batch.items_total,
+        }
+        links = batch.links
+        if links:
+            data["batching"] = links
 
+        data["actions"] = {"can_delete_feedbacks": self.can_delete_feedbacks()}
         return data
 
-    def fix_fields(self, data, param):
-        data[param] = json_compatible(data[param])
+    def can_delete_feedbacks(self):
+        return api.user.has_permission("collective.feedback: Delete Feedbacks")
+
+    def fix_fields(self, data):
+        """
+        Make data json compatible
+        """
+        for k, v in data.items():
+            data[k] = json_compatible(v)
         return data
 
     def parse_query(self):
@@ -75,8 +75,10 @@ class FeedbackGet(Service):
         res["query"] = query
         return res
 
-    def get_commented_obj(self, record):
-        uid = record._attrs.get("uid", "")
+    def get_commented_obj(self, uid):
+        """
+        Return obj based on uid.
+        """
         try:
             obj = api.content.get(UID=uid)
         except Unauthorized:
@@ -86,7 +88,7 @@ class FeedbackGet(Service):
             return
 
         if not api.user.has_permission(
-            "rer.customersatisfaction: Access Customer Satisfaction", obj=obj
+            "collective.feedback: Access Feedbacks", obj=obj
         ):
             # user does not have that permission on object
             return
@@ -94,6 +96,12 @@ class FeedbackGet(Service):
         return obj
 
     def get_single_object_feedbacks(self, uid):
+        """
+        Return data for single object
+        """
+        commented_object = self.get_commented_obj(uid=uid)
+        if not commented_object:
+            return []
         tool = getUtility(ICollectiveFeedbackStore)
         results = tool.search(query={"uid": uid})
         feedbacks = []
@@ -101,12 +109,12 @@ class FeedbackGet(Service):
         for record in results:
             feedbacks.append(
                 {
-                    "uid": record._attrs.get("uid", ""),
+                    "uid": uid,
                     "date": record._attrs.get("date", ""),
                     "vote": record._attrs.get("vote", ""),
                     "answer": record._attrs.get("answer", ""),
                     "comment": record._attrs.get("comment", ""),
-                    "title": record._attrs.get("title", ""),
+                    "title": commented_object.title,
                 }
             )
 
@@ -127,12 +135,13 @@ class FeedbackGet(Service):
             uid = feedback._attrs.get("uid", "")
             date = feedback._attrs.get("date", "")
             vote = feedback._attrs.get("vote", "")
-
             if uid not in feedbacks:
-                obj = self.get_commented_obj(record=feedback)
-                if not obj:
+                obj = self.get_commented_obj(uid=uid)
+                if not obj and not api.user.has_permission(
+                    "collective.feedback: Show Deleted Feedbacks"
+                ):
+                    # only manager can list deleted object's reviews
                     continue
-
                 new_data = {
                     "vote_num": 0,
                     "vote_sum": 0,
@@ -212,7 +221,8 @@ class FeedbackGetCSV(FeedbackGet):
         columns = ["title", "url", "vote", "comment", "date", "answer"]
 
         for item in tool.search():
-            obj = self.get_commented_obj(record=item)
+            uid = item._attrs.get("uid", "")
+            obj = self.get_commented_obj(uid=uid)
             if not obj:
                 continue
 

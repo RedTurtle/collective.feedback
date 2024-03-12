@@ -5,8 +5,19 @@ Changelog
 1.0.1 (unreleased)
 ------------------
 
-- Nothing changed yet.
-
+- Only managers can access deleted feedbacks.
+  [cekk]
+- Allow all authenticated users to access @feedback endpoint.
+  The endpoint will return only feedbacks on objects that they can edit.
+  [cekk]
+- Improve tests.
+  [cekk]
+- Install souper.plone to have its control-panel in backend.
+  [cekk]
+- Remove unused user action.
+  [cekk]
+- Add `actions` infos in @feedback endpoint, to let the frontend know what the user can do.
+  [cekk]
 
 1.0.0 (2023-02-16)
 ------------------

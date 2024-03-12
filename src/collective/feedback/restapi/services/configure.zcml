@@ -17,7 +17,7 @@
       method="GET"
       factory=".get.FeedbackGet"
       for="plone.app.layout.navigation.interfaces.INavigationRoot"
-      permission="collective.feedback.AccessFeedbacks"
+      permission="collective.feedback.FeedbacksOverview"
       layer="collective.feedback.interfaces.ICollectiveFeedbackLayer"
       name="@feedback"
       />
@@ -25,7 +25,7 @@
       method="GET"
       factory=".get.FeedbackGetCSV"
       for="plone.app.layout.navigation.interfaces.INavigationRoot"
-      permission="collective.feedback.AccessFeedbacks"
+      permission="collective.feedback.FeedbacksOverview"
       layer="collective.feedback.interfaces.ICollectiveFeedbackLayer"
       name="@feedback-csv"
       />
@@ -33,7 +33,7 @@
       method="DELETE"
       factory=".delete.FeedbackDelete"
       for="plone.app.layout.navigation.interfaces.INavigationRoot"
-      permission="collective.feedback.ManageFeedbacks"
+      permission="collective.feedback.DeleteFeedbacks"
       layer="collective.feedback.interfaces.ICollectiveFeedbackLayer"
       name="@feedback-delete"
       />
