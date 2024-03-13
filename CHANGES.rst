@@ -2,7 +2,7 @@ Changelog
 =========
 
 
-1.1.1 (unreleased)
+1.1.1 (2024-03-13)
 ------------------
 
 - re-add actions.xml file to have a user-action needed on Volto.
