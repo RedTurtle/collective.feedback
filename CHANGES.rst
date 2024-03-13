@@ -5,7 +5,8 @@ Changelog
 1.1.1 (unreleased)
 ------------------
 
-- Nothing changed yet.
+- re-add actions.xml file to have a user-action needed on Volto.
+  [cekk]
 
 
 1.1.0 (2024-03-12)
