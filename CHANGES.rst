@@ -5,7 +5,8 @@ Changelog
 1.1.2 (unreleased)
 ------------------
 
-- Nothing changed yet.
+- Fix typo in actions.xml permission.
+  [cekk]
 
 
 1.1.1 (2024-03-13)

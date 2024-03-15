@@ -27,4 +27,14 @@
         handler=".upgrades.update_actions"
         />
   </genericsetup:upgradeSteps>
+  <genericsetup:upgradeSteps
+      profile="collective.feedback:default"
+      source="1200"
+      destination="1201"
+      >
+    <genericsetup:upgradeStep
+        title="Fix typo in permission"
+        handler=".upgrades.update_actions"
+        />
+  </genericsetup:upgradeSteps>
 </configure>
