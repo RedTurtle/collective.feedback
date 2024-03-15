@@ -2,7 +2,7 @@ Changelog
 =========
 
 
-1.1.2 (unreleased)
+1.1.2 (2024-03-15)
 ------------------
 
 - Fix typo in actions.xml permission.
