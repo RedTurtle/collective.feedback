@@ -2,7 +2,7 @@ Changelog
 =========
 
 
-1.1.3 (unreleased)
+1.1.3 (2024-04-29)
 ------------------
 
 - add a plone2volto url conversion method on feedback download
