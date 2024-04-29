@@ -214,7 +214,6 @@ class FeedbackGetCSV(FeedbackGet):
         )
         self.request.response.write(data)
 
-
     def plone2volto(self, url):
         portal_url = api.portal.get().absolute_url()
         frontend_domain = api.portal.get_registry_record(
