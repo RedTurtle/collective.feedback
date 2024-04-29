@@ -5,7 +5,8 @@ Changelog
 1.1.3 (unreleased)
 ------------------
 
-- Nothing changed yet.
+- add a plone2volto url conversion method on feedback download
+  [lucabel]
 
 
 1.1.2 (2024-03-15)
