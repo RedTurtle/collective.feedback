@@ -214,6 +214,16 @@ class FeedbackGetCSV(FeedbackGet):
         )
         self.request.response.write(data)
 
+
+    def plone2volto(self, url):
+        portal_url = api.portal.get().absolute_url()
+        frontend_domain = api.portal.get_registry_record(
+            "volto.frontend_domain", default=""
+        )
+        if frontend_domain and url.startswith(portal_url):
+            return url.replace(portal_url, frontend_domain, 1)
+        return url
+
     def get_data(self):
         tool = getUtility(ICollectiveFeedbackStore)
         sbuf = StringIO()
@@ -240,7 +250,7 @@ class FeedbackGetCSV(FeedbackGet):
                 val = json_compatible(v)
                 data[k] = val
 
-            data["url"] = obj.absolute_url()
+            data["url"] = self.plone2volto(obj.absolute_url())
             rows.append(data)
 
         writer = csv.DictWriter(sbuf, fieldnames=columns, delimiter=",")
