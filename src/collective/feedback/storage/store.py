@@ -21,7 +21,7 @@ logger = logging.getLogger(__name__)
 class CollectiveFeedbackStore(object):
     """Store class for collective.feedback catalog soup"""
 
-    fields = ["uid", "url", "title", "comment", "vote", "answer", "date"]
+    fields = ["uid", "url", "title", "comment", "vote", "answer", "date", "read"]
     text_index = "title"
     indexes = ["title", "vote", "uid"]
     keyword_indexes = []

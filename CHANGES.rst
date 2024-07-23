@@ -5,7 +5,8 @@ Changelog
 1.1.4 (unreleased)
 ------------------
 
-- Nothing changed yet.
+- Add read field to the comment.
+  [folix-01]
 
 
 1.1.3 (2024-04-29)
