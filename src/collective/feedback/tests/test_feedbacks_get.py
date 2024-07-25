@@ -38,9 +38,11 @@ class TestGet(unittest.TestCase):
         if title:
             record.attrs["title"] = title
 
+        id = soup.add(record)
+
         transaction.commit()
 
-        return soup.add(record)
+        return id
 
     def setUp(self):
         self.app = self.layer["app"]
