@@ -27,6 +27,8 @@ class FeedbackUpdate(Service):
     def reply(self):
         alsoProvides(self.request, IDisableCSRFProtection)
 
+        tool = getUtility(ICollectiveFeedbackStore)
+
         if self.params:
             id = self.params[0]
 
@@ -40,8 +42,6 @@ class FeedbackUpdate(Service):
         self.validate_form(form_data=form_data)
 
         form_data = self.extract_data(form_data)
-
-        tool = getUtility(ICollectiveFeedbackStore)
 
         try:
             res = tool.update(id, form_data)
