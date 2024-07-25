@@ -35,7 +35,7 @@ class FeedbackUpdate(Service):
             comment = tool.get(id)
 
             if comment.get("error", "") == "NotFound":
-                raise NotFound(f"Object with id={id} not found")
+                raise NotFound()
 
         form_data = json_body(self.request)
 
