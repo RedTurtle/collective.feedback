@@ -5,6 +5,9 @@ Changelog
 1.1.4 (unreleased)
 ------------------
 
+- Add feedback update endpoint.
+  [folix-01]
+
 - Add read field to the comment.
   [folix-01]
 

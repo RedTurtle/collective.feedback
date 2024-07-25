@@ -135,6 +135,8 @@ class FeedbackGet(Service):
             uid = feedback._attrs.get("uid", "")
             date = feedback._attrs.get("date", "")
             vote = feedback._attrs.get("vote", "")
+            id = feedback.id
+
             if uid not in feedbacks:
                 obj = self.get_commented_obj(uid=uid)
                 if not obj and not api.user.has_permission(
@@ -148,6 +150,7 @@ class FeedbackGet(Service):
                     "comments": 0,
                     "title": feedback._attrs.get("title", ""),
                     "uid": uid,
+                    "id": id,
                 }
 
                 if obj:

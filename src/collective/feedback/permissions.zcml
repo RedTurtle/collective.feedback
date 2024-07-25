@@ -21,6 +21,10 @@
         id="collective.feedback.ShowDeletedFeedbacks"
         title="collective.feedback: Show Deleted Feedbacks"
         />
+    <permission
+        id="collective.feedback.UpdateFeedbacks"
+        title="collective.feedback: Update Feedbacks"
+        />
 
   </configure>
 

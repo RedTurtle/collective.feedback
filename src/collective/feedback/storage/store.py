@@ -83,10 +83,10 @@ class CollectiveFeedbackStore(object):
             #     return "{} in any('{}')".format(index, value)
         else:
             return Eq(index, value)
-            if isinstance(value, int):
-                return "{} == {}".format(index, value)
-            else:
-                return "{} == '{}'".format(index, value)
+            # if isinstance(value, int):
+            #     return "{} == {}".format(index, value)
+            # else:
+            #     return "{} == '{}'".format(index, value)
 
     def get_record(self, id):
         if isinstance(id, six.text_type) or isinstance(id, str):
@@ -113,6 +113,7 @@ class CollectiveFeedbackStore(object):
 
             else:
                 record.attrs[k] = v
+
         self.soup.reindex(records=[record])
 
     def delete(self, id):
@@ -122,6 +123,13 @@ class CollectiveFeedbackStore(object):
             logger.error('[DELETE] Subscription with id "{}" not found.'.format(id))
             return {"error": "NotFound"}
         del self.soup[record]
+
+    def get(self, id):
+        try:
+            return self.soup.get(id)
+        except KeyError:
+            logger.error('[GET] Subscription with id "{}" not found.'.format(id))
+            return {"error": "NotFound"}
 
     def clear(self):
         self.soup.clear()

@@ -25,6 +25,11 @@
       <role name="Manager" />
       <role name="Site Administrator" />
     </permission>
-    
+
+    <permission acquire="True" name="collective.feedback: Update Feedbacks">
+      <role name="Manager" />
+      <role name="Site Administrator" />
+    </permission>
+
   </permissions>
 </rolemap>
