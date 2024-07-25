@@ -1,4 +1,3 @@
-from collective.feedback.interfaces import ICollectiveFeedbackStore
 from plone import api
 from plone.protect.interfaces import IDisableCSRFProtection
 from plone.restapi.deserializer import json_body
@@ -7,6 +6,8 @@ from zExceptions import BadRequest, NotFound
 from zope.component import getUtility
 from zope.interface import alsoProvides, implementer
 from zope.publisher.interfaces import IPublishTraverse
+
+from collective.feedback.interfaces import ICollectiveFeedbackStore
 
 
 @implementer(IPublishTraverse)

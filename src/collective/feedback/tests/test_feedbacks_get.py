@@ -1,20 +1,22 @@
 # -*- coding: utf-8 -*-
-from collective.feedback.interfaces import ICollectiveFeedbackStore
-from collective.feedback.testing import RESTAPI_TESTING
+import unittest
 from datetime import datetime
-from plone import api
-from plone.app.testing import setRoles
-from plone.app.testing import SITE_OWNER_NAME
-from plone.app.testing import SITE_OWNER_PASSWORD
-from plone.app.testing import TEST_USER_ID
-from plone.restapi.serializer.converters import json_compatible
-from plone.restapi.testing import RelativeSession
-from souper.soup import get_soup
-from souper.soup import Record
-from zope.component import getUtility
 
 import transaction
-import unittest
+from plone import api
+from plone.app.testing import (
+    SITE_OWNER_NAME,
+    SITE_OWNER_PASSWORD,
+    TEST_USER_ID,
+    setRoles,
+)
+from plone.restapi.serializer.converters import json_compatible
+from plone.restapi.testing import RelativeSession
+from souper.soup import Record, get_soup
+from zope.component import getUtility
+
+from collective.feedback.interfaces import ICollectiveFeedbackStore
+from collective.feedback.testing import RESTAPI_TESTING
 
 
 class TestGet(unittest.TestCase):

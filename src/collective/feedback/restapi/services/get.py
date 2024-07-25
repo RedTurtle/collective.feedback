@@ -1,7 +1,8 @@
-from AccessControl import Unauthorized
-from collective.feedback.interfaces import ICollectiveFeedbackStore
+import csv
 from copy import deepcopy
 from datetime import datetime
+
+from AccessControl import Unauthorized
 from plone import api
 from plone.restapi.batching import HypermediaBatch
 from plone.restapi.search.utils import unflatten_dotted_dict
@@ -12,7 +13,7 @@ from zope.component import getUtility
 from zope.interface import implementer
 from zope.publisher.interfaces import IPublishTraverse
 
-import csv
+from collective.feedback.interfaces import ICollectiveFeedbackStore
 
 
 @implementer(IPublishTraverse)

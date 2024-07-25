@@ -1,16 +1,19 @@
 # -*- coding: utf-8 -*-
-from collective.feedback.interfaces import ICollectiveFeedbackStore
-from collective.feedback.testing import RESTAPI_TESTING
+import unittest
+
+import transaction
 from plone import api
-from plone.app.testing import setRoles
-from plone.app.testing import SITE_OWNER_NAME
-from plone.app.testing import SITE_OWNER_PASSWORD
-from plone.app.testing import TEST_USER_ID
+from plone.app.testing import (
+    SITE_OWNER_NAME,
+    SITE_OWNER_PASSWORD,
+    TEST_USER_ID,
+    setRoles,
+)
 from plone.restapi.testing import RelativeSession
 from zope.component import getUtility
 
-import transaction
-import unittest
+from collective.feedback.interfaces import ICollectiveFeedbackStore
+from collective.feedback.testing import RESTAPI_TESTING
 
 
 class TestAdd(unittest.TestCase):
