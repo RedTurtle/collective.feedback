@@ -1,4 +1,3 @@
-from plone import api
 from plone.protect.interfaces import IDisableCSRFProtection
 from plone.restapi.deserializer import json_body
 from plone.restapi.services import Service
@@ -55,7 +54,7 @@ class FeedbackUpdate(Service):
                 )
             )
 
-        if res == None:
+        if res is None:
             return self.reply_no_content()
 
         self.request.response.setStatus(500)
