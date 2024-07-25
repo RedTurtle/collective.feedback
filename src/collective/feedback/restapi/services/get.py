@@ -135,7 +135,7 @@ class FeedbackGet(Service):
             uid = feedback._attrs.get("uid", "")
             date = feedback._attrs.get("date", "")
             vote = feedback._attrs.get("vote", "")
-            id = feedback.id
+            id = feedback.intid
 
             if uid not in feedbacks:
                 obj = self.get_commented_obj(uid=uid)
