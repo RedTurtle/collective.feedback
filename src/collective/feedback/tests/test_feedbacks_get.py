@@ -117,6 +117,8 @@ class TestGet(unittest.TestCase):
         now = datetime.now()
         id = self.add_record(vote=1, comment="is ok", date=now)
 
+        transaction.commit()
+
         response = self.api_session.get(self.url)
         res = response.json()
 
@@ -160,6 +162,9 @@ class TestGet(unittest.TestCase):
             comment="ok also for restricted",
             uid=self.restricted_document.UID(),
         )
+
+        transaction.commit()
+
         api_session = RelativeSession(self.portal_url)
         api_session.headers.update({"Accept": "application/json"})
         api_session.auth = ("global", "secret!!")
@@ -180,6 +185,9 @@ class TestGet(unittest.TestCase):
             comment="ok also for restricted",
             uid=self.restricted_document.UID(),
         )
+
+        transaction.commit()
+
         api_session = RelativeSession(self.portal_url)
         api_session.headers.update({"Accept": "application/json"})
         api_session.auth = ("local", "secret!!")
@@ -199,6 +207,8 @@ class TestGet(unittest.TestCase):
             comment="ok for deleted content",
             uid="qwertyuiop",
         )
+
+        transaction.commit()
 
         response = self.api_session.get(self.url)
         res = response.json()
