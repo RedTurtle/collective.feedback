@@ -37,7 +37,7 @@ class TestGet(unittest.TestCase):
             record.attrs["uid"] = uid
         if title:
             record.attrs["title"] = title
-        soup.add(record)
+        return soup.add(record)
         transaction.commit()
 
     def setUp(self):
@@ -115,7 +115,7 @@ class TestGet(unittest.TestCase):
         res = response.json()
         self.assertEqual(res["items_total"], 0)
         now = datetime.now()
-        self.add_record(vote=1, comment="is ok", date=now)
+        id = self.add_record(vote=1, comment="is ok", date=now)
 
         response = self.api_session.get(self.url)
         res = response.json()
@@ -126,6 +126,7 @@ class TestGet(unittest.TestCase):
             [
                 {
                     "comments": 1,
+                    "id": id,
                     "last_vote": json_compatible(now),
                     "title": "",
                     "uid": "",
