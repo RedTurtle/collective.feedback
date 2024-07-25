@@ -116,6 +116,7 @@ class FeedbackGet(Service):
                     "answer": record._attrs.get("answer", ""),
                     "comment": record._attrs.get("comment", ""),
                     "title": commented_object.title,
+                    "id": record.intid,
                 }
             )
 
@@ -136,7 +137,6 @@ class FeedbackGet(Service):
             uid = feedback._attrs.get("uid", "")
             date = feedback._attrs.get("date", "")
             vote = feedback._attrs.get("vote", "")
-            id = feedback.intid
 
             if uid not in feedbacks:
                 obj = self.get_commented_obj(uid=uid)
@@ -151,7 +151,6 @@ class FeedbackGet(Service):
                     "comments": 0,
                     "title": feedback._attrs.get("title", ""),
                     "uid": uid,
-                    "id": id,
                 }
 
                 if obj:

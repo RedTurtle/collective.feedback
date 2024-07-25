@@ -37,12 +37,8 @@ class TestGet(unittest.TestCase):
             record.attrs["uid"] = uid
         if title:
             record.attrs["title"] = title
-
-        id = soup.add(record)
-
+        soup.add(record)
         transaction.commit()
-
-        return id
 
     def setUp(self):
         self.app = self.layer["app"]
@@ -119,7 +115,7 @@ class TestGet(unittest.TestCase):
         res = response.json()
         self.assertEqual(res["items_total"], 0)
         now = datetime.now()
-        id = self.add_record(vote=1, comment="is ok", date=now)
+        self.add_record(vote=1, comment="is ok", date=now)
 
         response = self.api_session.get(self.url)
         res = response.json()
@@ -130,7 +126,6 @@ class TestGet(unittest.TestCase):
             [
                 {
                     "comments": 1,
-                    "id": id,
                     "last_vote": json_compatible(now),
                     "title": "",
                     "uid": "",
@@ -164,7 +159,6 @@ class TestGet(unittest.TestCase):
             comment="ok also for restricted",
             uid=self.restricted_document.UID(),
         )
-
         api_session = RelativeSession(self.portal_url)
         api_session.headers.update({"Accept": "application/json"})
         api_session.auth = ("global", "secret!!")
@@ -185,7 +179,6 @@ class TestGet(unittest.TestCase):
             comment="ok also for restricted",
             uid=self.restricted_document.UID(),
         )
-
         api_session = RelativeSession(self.portal_url)
         api_session.headers.update({"Accept": "application/json"})
         api_session.auth = ("local", "secret!!")
