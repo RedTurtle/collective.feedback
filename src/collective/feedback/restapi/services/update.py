@@ -30,7 +30,10 @@ class FeedbackUpdate(Service):
         tool = getUtility(ICollectiveFeedbackStore)
 
         if self.params:
-            id = self.params[0]
+            try:
+                id = int(self.params[0])
+            except ValueError:
+                raise BadRequest(f"Bad id={self.params[0]} format provided")
 
             comment = tool.get(id)
 
