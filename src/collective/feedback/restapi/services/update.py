@@ -77,6 +77,6 @@ class FeedbackUpdate(Service):
         check all required fields and parameters
         """
         for field in ["read"]:
-            value = form_data.get(field, "")
-            if not value:
+            value = form_data.get(field, None)
+            if value is None:
                 raise BadRequest("Campo obbligatorio mancante: {}".format(field))
