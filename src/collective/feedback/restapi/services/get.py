@@ -117,6 +117,7 @@ class FeedbackGet(Service):
                     "comment": record._attrs.get("comment", ""),
                     "title": commented_object.title,
                     "id": record.intid,
+                    "read": record._attrs.get("read", ""),
                 }
             )
 
