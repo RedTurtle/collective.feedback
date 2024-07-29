@@ -165,6 +165,11 @@ class FeedbackGet(Service):
             data["vote_num"] += 1
             data["vote_sum"] += vote
 
+            # Sign if page has unread comments
+            data["has_unread"] = data.get("has_unread", False) or feedback._attrs.get(
+                "read", False
+            )
+
             # number of comment
             comment = feedback._attrs.get("comment", "")
             answer = feedback._attrs.get("answer", "")
