@@ -187,17 +187,19 @@ class FeedbackGet(Service):
 
         has_undread = query.get("has_unread", None)
 
+        if has_undread in ("true", "false"):
+            has_undread = not (has_undread == "false") and has_undread == "true"
+        else:
+            has_undread = None
+
         for uid, feedback in feedbacks.items():
             # avg calculation
             feedback["vote"] = feedback.pop("vote_sum") / feedback.pop("vote_num")
 
             # Use has_unread filter
             if has_undread is not None:
-                if has_undread in ("true", "false"):
-                    has_undread = not (has_undread == "false") and has_undread == "true"
-
-                    if feedback["has_unread"] != has_undread:
-                        pages_to_remove.append(uid)
+                if feedback["has_unread"] != has_undread:
+                    pages_to_remove.append(uid)
 
         for uid in pages_to_remove:
             del feedbacks[uid]
