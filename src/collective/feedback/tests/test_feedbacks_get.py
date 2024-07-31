@@ -132,6 +132,7 @@ class TestGet(unittest.TestCase):
             [
                 {
                     "comments": 1,
+                    "has_unread": True,
                     "last_vote": json_compatible(now),
                     "title": "",
                     "uid": "",
