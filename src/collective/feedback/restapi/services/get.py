@@ -183,9 +183,22 @@ class FeedbackGet(Service):
                 if data["last_vote"] < date:
                     data["last_vote"] = date
 
-        # avg calculation
+        pages_to_remove = []
+
         for uid, feedback in feedbacks.items():
+            # avg calculation
             feedback["vote"] = feedback.pop("vote_sum") / feedback.pop("vote_num")
+
+            has_undread = query.get("has_unread", None)
+
+            # Use has_unread filter
+            if has_undread is not None:
+                has_undread = not (has_undread == "false") and has_undread == "true"
+                if feedback["has_unread"] != has_undread:
+                    pages_to_remove.append(uid)
+
+        for uid in pages_to_remove:
+            del feedbacks[uid]
 
         result = list(feedbacks.values())
 
