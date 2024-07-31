@@ -193,9 +193,11 @@ class FeedbackGet(Service):
 
             # Use has_unread filter
             if has_undread is not None:
-                has_undread = not (has_undread == "false") and has_undread == "true"
-                if feedback["has_unread"] != has_undread:
-                    pages_to_remove.append(uid)
+                if has_undread in ("true", "false"):
+                    has_undread = not (has_undread == "false") and has_undread == "true"
+
+                    if feedback["has_unread"] != has_undread:
+                        pages_to_remove.append(uid)
 
         for uid in pages_to_remove:
             del feedbacks[uid]
