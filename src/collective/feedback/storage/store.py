@@ -1,18 +1,14 @@
 # -*- coding: utf-8 -*-
-from collective.feedback.interfaces import ICollectiveFeedbackStore
+import logging
 from datetime import datetime
+
+import six
 from plone import api
-from repoze.catalog.query import And
-from repoze.catalog.query import Any
-from repoze.catalog.query import Contains
-from repoze.catalog.query import Eq
-from souper.soup import get_soup
-from souper.soup import Record
+from repoze.catalog.query import And, Any, Contains, Eq
+from souper.soup import Record, get_soup
 from zope.interface import implementer
 
-import logging
-import six
-
+from collective.feedback.interfaces import ICollectiveFeedbackStore
 
 logger = logging.getLogger(__name__)
 
@@ -21,7 +17,7 @@ logger = logging.getLogger(__name__)
 class CollectiveFeedbackStore(object):
     """Store class for collective.feedback catalog soup"""
 
-    fields = ["uid", "url", "title", "comment", "vote", "answer", "date"]
+    fields = ["uid", "url", "title", "comment", "vote", "answer", "date", "read"]
     text_index = "title"
     indexes = ["title", "vote", "uid"]
     keyword_indexes = []
@@ -83,10 +79,10 @@ class CollectiveFeedbackStore(object):
             #     return "{} in any('{}')".format(index, value)
         else:
             return Eq(index, value)
-            if isinstance(value, int):
-                return "{} == {}".format(index, value)
-            else:
-                return "{} == '{}'".format(index, value)
+            # if isinstance(value, int):
+            #     return "{} == {}".format(index, value)
+            # else:
+            #     return "{} == '{}'".format(index, value)
 
     def get_record(self, id):
         if isinstance(id, six.text_type) or isinstance(id, str):
@@ -113,6 +109,7 @@ class CollectiveFeedbackStore(object):
 
             else:
                 record.attrs[k] = v
+
         self.soup.reindex(records=[record])
 
     def delete(self, id):
@@ -122,6 +119,13 @@ class CollectiveFeedbackStore(object):
             logger.error('[DELETE] Subscription with id "{}" not found.'.format(id))
             return {"error": "NotFound"}
         del self.soup[record]
+
+    def get(self, id):
+        try:
+            return self.soup.get(id)
+        except KeyError:
+            logger.error('[GET] Subscription with id "{}" not found.'.format(id))
+            return {"error": "NotFound"}
 
     def clear(self):
         self.soup.clear()

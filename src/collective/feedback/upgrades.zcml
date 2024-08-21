@@ -37,4 +37,14 @@
         handler=".upgrades.update_actions"
         />
   </genericsetup:upgradeSteps>
+  <genericsetup:upgradeSteps
+      profile="collective.feedback:default"
+      source="1201"
+      destination="1202"
+      >
+    <genericsetup:upgradeStep
+        title="Add feedback update permission"
+        handler=".upgrades.update_rolemap"
+        />
+  </genericsetup:upgradeSteps>
 </configure>

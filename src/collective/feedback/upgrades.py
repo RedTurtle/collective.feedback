@@ -1,9 +1,8 @@
 # -*- coding: utf-8 -*-
-from plone import api
-from plone.app.upgrade.utils import installOrReinstallProduct
-
 import logging
 
+from plone import api
+from plone.app.upgrade.utils import installOrReinstallProduct
 
 logger = logging.getLogger(__name__)
 

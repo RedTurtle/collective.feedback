@@ -1,11 +1,11 @@
-from collective.feedback.interfaces import ICollectiveFeedbackStore
 from plone.protect.interfaces import IDisableCSRFProtection
 from plone.restapi.services import Service
 from zExceptions import BadRequest
 from zope.component import getUtility
-from zope.interface import alsoProvides
-from zope.interface import implementer
+from zope.interface import alsoProvides, implementer
 from zope.publisher.interfaces import IPublishTraverse
+
+from collective.feedback.interfaces import ICollectiveFeedbackStore
 
 
 @implementer(IPublishTraverse)

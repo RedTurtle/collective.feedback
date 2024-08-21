@@ -1,7 +1,8 @@
-from AccessControl import Unauthorized
-from collective.feedback.interfaces import ICollectiveFeedbackStore
+import csv
 from copy import deepcopy
 from datetime import datetime
+
+from AccessControl import Unauthorized
 from plone import api
 from plone.restapi.batching import HypermediaBatch
 from plone.restapi.search.utils import unflatten_dotted_dict
@@ -12,7 +13,7 @@ from zope.component import getUtility
 from zope.interface import implementer
 from zope.publisher.interfaces import IPublishTraverse
 
-import csv
+from collective.feedback.interfaces import ICollectiveFeedbackStore
 
 
 @implementer(IPublishTraverse)
@@ -115,6 +116,8 @@ class FeedbackGet(Service):
                     "answer": record._attrs.get("answer", ""),
                     "comment": record._attrs.get("comment", ""),
                     "title": commented_object.title,
+                    "id": record.intid,
+                    "read": record._attrs.get("read", ""),
                 }
             )
 
@@ -135,6 +138,7 @@ class FeedbackGet(Service):
             uid = feedback._attrs.get("uid", "")
             date = feedback._attrs.get("date", "")
             vote = feedback._attrs.get("vote", "")
+
             if uid not in feedbacks:
                 obj = self.get_commented_obj(uid=uid)
                 if not obj and not api.user.has_permission(
@@ -161,6 +165,11 @@ class FeedbackGet(Service):
             data["vote_num"] += 1
             data["vote_sum"] += vote
 
+            # Sign if page has unread comments
+            data["has_unread"] = data.get(
+                "has_unread", False
+            ) or not feedback._attrs.get("read", False)
+
             # number of comment
             comment = feedback._attrs.get("comment", "")
             answer = feedback._attrs.get("answer", "")
@@ -174,9 +183,26 @@ class FeedbackGet(Service):
                 if data["last_vote"] < date:
                     data["last_vote"] = date
 
-        # avg calculation
+        pages_to_remove = []
+
+        has_undread = query.get("has_unread", None)
+
+        if has_undread in ("true", "false"):
+            has_undread = not (has_undread == "false") and has_undread == "true"
+        else:
+            has_undread = None
+
         for uid, feedback in feedbacks.items():
+            # avg calculation
             feedback["vote"] = feedback.pop("vote_sum") / feedback.pop("vote_num")
+
+            # Use has_unread filter
+            if has_undread is not None:
+                if feedback["has_unread"] != has_undread:
+                    pages_to_remove.append(uid)
+
+        for uid in pages_to_remove:
+            del feedbacks[uid]
 
         result = list(feedbacks.values())
 

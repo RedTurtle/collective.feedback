@@ -1,30 +1,35 @@
 # -*- coding: utf-8 -*-
-from collective.feedback.interfaces import ICollectiveFeedbackStore
-from collective.feedback.testing import RESTAPI_TESTING
+import unittest
 from datetime import datetime
-from plone import api
-from plone.app.testing import setRoles
-from plone.app.testing import SITE_OWNER_NAME
-from plone.app.testing import SITE_OWNER_PASSWORD
-from plone.app.testing import TEST_USER_ID
-from plone.restapi.serializer.converters import json_compatible
-from plone.restapi.testing import RelativeSession
-from souper.soup import get_soup
-from souper.soup import Record
-from zope.component import getUtility
 
 import transaction
-import unittest
+from plone import api
+from plone.app.testing import (
+    SITE_OWNER_NAME,
+    SITE_OWNER_PASSWORD,
+    TEST_USER_ID,
+    setRoles,
+)
+from plone.restapi.serializer.converters import json_compatible
+from plone.restapi.testing import RelativeSession
+from souper.soup import Record, get_soup
+from zope.component import getUtility
+
+from collective.feedback.interfaces import ICollectiveFeedbackStore
+from collective.feedback.testing import RESTAPI_TESTING
 
 
 class TestGet(unittest.TestCase):
     layer = RESTAPI_TESTING
 
-    def add_record(self, date=None, vote="", uid="", comment="", title=""):
+    def add_record(self, date=None, vote="", uid="", comment="", title="", read=False):
         if not date:
             date = datetime.now()
+
         soup = get_soup("feedback_soup", self.portal)
+
         transaction.commit()
+
         record = Record()
         record.attrs["vote"] = vote
         record.attrs["date"] = date
@@ -35,6 +40,9 @@ class TestGet(unittest.TestCase):
             record.attrs["uid"] = uid
         if title:
             record.attrs["title"] = title
+        if read:
+            record.attrs["read"] = read
+
         soup.add(record)
         transaction.commit()
 
@@ -124,6 +132,7 @@ class TestGet(unittest.TestCase):
             [
                 {
                     "comments": 1,
+                    "has_unread": True,
                     "last_vote": json_compatible(now),
                     "title": "",
                     "uid": "",
@@ -231,3 +240,59 @@ class TestGet(unittest.TestCase):
 
         self.assertIn("can_delete_feedbacks", res["actions"])
         self.assertFalse(res["actions"]["can_delete_feedbacks"])
+
+    def test_has_unread_filter(self):
+        response = self.api_session.get(self.url)
+        res = response.json()
+
+        self.assertEqual(res["items_total"], 0)
+
+        now = datetime.now()
+
+        self.add_record(vote=1, comment="is ok", date=now, read=True)
+
+        response = self.api_session.get(self.url)
+
+        res = response.json()
+
+        self.assertEqual(res["items_total"], 1)
+
+        self.assertEqual(
+            res["items"],
+            [
+                {
+                    "comments": 1,
+                    "last_vote": json_compatible(now),
+                    "title": "",
+                    "uid": "",
+                    "vote": 1.0,
+                    "has_unread": False,
+                }
+            ],
+        )
+
+        self.add_record(vote=1, comment="is ok", date=now, read=False)
+
+        # has_unread=true case
+        response = self.api_session.get(self.url + "?has_unread=true")
+
+        self.assertEqual(
+            response.json()["items"],
+            [
+                {
+                    "comments": 2,
+                    "last_vote": json_compatible(now),
+                    "title": "",
+                    "uid": "",
+                    "vote": 1.0,
+                    "has_unread": True,
+                }
+            ],
+        )
+
+        self.add_record(vote=1, comment="is ok", date=now)
+
+        # has_unread=false case
+        response = self.api_session.get(self.url + "?has_unread=false")
+
+        self.assertEqual(response.json()["items"], [])
