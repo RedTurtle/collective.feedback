@@ -5,8 +5,8 @@ Changelog
 1.1.5 (unreleased)
 ------------------
 
-- Nothing changed yet.
-
+- Feedbacks list update endpoint @@feedback-list.
+  [folix-01]
 
 1.1.4 (2024-08-21)
 ------------------
