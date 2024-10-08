@@ -45,5 +45,13 @@
       layer="collective.feedback.interfaces.ICollectiveFeedbackLayer"
       name="@feedback"
       />
+  <plone:service
+      method="PATCH"
+      factory=".list_update.FeedbacListkUpdate"
+      for="plone.app.layout.navigation.interfaces.INavigationRoot"
+      permission="collective.feedback.FeedbacksOverview"
+      layer="collective.feedback.interfaces.ICollectiveFeedbackLayer"
+      name="@feedback-list"
+      />
 
 </configure>
