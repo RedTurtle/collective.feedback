@@ -87,6 +87,27 @@ Search reviews
 Right now data is not indexed so search filters does not work. You only need to call search method to get all data.
 
 
+List update
+-----------
+
+PATCH
+~~~~~
+
+This endpoint allows update feedbacks by list.
+By now you can only change "read" property
+
+
+Example::
+
+    curl http://localhost:8080/Plone/@feedback-list \
+        -X PATCH \
+        -H 'Accept: application/json' \
+        -H 'Content-Type: application/json' \
+        -d '{
+            "101010101": {"read": true},
+        }'
+
+
 Installation
 ------------
 

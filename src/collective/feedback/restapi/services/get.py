@@ -15,6 +15,8 @@ from zope.publisher.interfaces import IPublishTraverse
 
 from collective.feedback.interfaces import ICollectiveFeedbackStore
 
+DEFAULT_SORT_KEY = "date"
+
 
 @implementer(IPublishTraverse)
 class FeedbackGet(Service):
@@ -35,6 +37,9 @@ class FeedbackGet(Service):
             results = self.get_single_object_feedbacks(self.params[0])
         else:
             results = self.get_data()
+
+        results = self.filter_unread(self.sort_results(results))
+
         batch = HypermediaBatch(self.request, results)
         data = {
             "@id": batch.canonical_url,
@@ -47,6 +52,24 @@ class FeedbackGet(Service):
 
         data["actions"] = {"can_delete_feedbacks": self.can_delete_feedbacks()}
         return data
+
+    def sort_results(self, results):
+        sort_on = self.request.get("sort_on")
+        sort_order = self.request.get("sort_order", "")
+
+        return sorted(
+            results,
+            key=lambda item: item.get(sort_on, DEFAULT_SORT_KEY),
+            reverse=sort_order == "descending",
+        )
+
+    def filter_unread(self, results):
+        unread = self.request.get("unread")
+
+        if unread:
+            return list(filter(lambda item: not item.get("read"), results))
+
+        return results
 
     def can_delete_feedbacks(self):
         return api.user.has_permission("collective.feedback: Delete Feedbacks")
