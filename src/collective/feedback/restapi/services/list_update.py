@@ -3,7 +3,7 @@ from plone.restapi.deserializer import json_body
 from plone.restapi.services import Service
 from zExceptions import BadRequest, NotFound
 from zope.component import getUtility
-from zope.interface import alsoProvides, implementer
+from zope.interface import alsoProvides
 
 from collective.feedback.interfaces import ICollectiveFeedbackStore
 
