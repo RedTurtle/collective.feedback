@@ -1,11 +1,13 @@
+from collective.feedback.interfaces import ICollectiveFeedbackStore
 from plone.protect.interfaces import IDisableCSRFProtection
 from plone.restapi.services import Service
 from zExceptions import BadRequest
 from zope.component import getUtility
-from zope.interface import alsoProvides, implementer
+from zope.interface import alsoProvides
+from zope.interface import implementer
 from zope.publisher.interfaces import IPublishTraverse
 
-from collective.feedback.interfaces import ICollectiveFeedbackStore
+import uuid
 
 
 @implementer(IPublishTraverse)
@@ -26,18 +28,26 @@ class FeedbackDelete(Service):
         tool = getUtility(ICollectiveFeedbackStore)
 
         if self.params:
+            search_value = self.params[0]
             try:
-                self.id = self.params[0]
+                uuid.UUID(search_value)
+                valid_uuid = True
             except ValueError:
-                raise BadRequest("Id should be a number.")
+                valid_uuid = False
 
-            feedbacks = tool.search(query={"uid": self.id})
+            feedbacks = (
+                tool.search(query={"uid": search_value})
+                if valid_uuid
+                else tool.search(query={"title": search_value})
+            )
             for feedback in feedbacks:
                 res = tool.delete(id=feedback.intid)
                 if not res:
                     continue
                 if res.get("error", "") == "NotFound":
-                    raise BadRequest('Unable to find item with id "{}"'.format(self.id))
+                    raise BadRequest(
+                        'Unable to find item with id "{}"'.format(search_value)
+                    )
                 self.request.response.setStatus(500)
                 return dict(
                     error=dict(

@@ -8,7 +8,7 @@
   <plone:service
       method="POST"
       factory=".add.FeedbackAdd"
-      for="plone.dexterity.interfaces.IDexterityContent"
+      for="plone.app.layout.navigation.interfaces.INavigationRoot"
       permission="zope2.View"
       layer="collective.feedback.interfaces.ICollectiveFeedbackLayer"
       name="@feedback-add"

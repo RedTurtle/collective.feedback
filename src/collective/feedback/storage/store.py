@@ -1,14 +1,18 @@
 # -*- coding: utf-8 -*-
-import logging
+from collective.feedback.interfaces import ICollectiveFeedbackStore
 from datetime import datetime
-
-import six
 from plone import api
-from repoze.catalog.query import And, Any, Contains, Eq
-from souper.soup import Record, get_soup
+from repoze.catalog.query import And
+from repoze.catalog.query import Any
+from repoze.catalog.query import Contains
+from repoze.catalog.query import Eq
+from souper.soup import get_soup
+from souper.soup import Record
 from zope.interface import implementer
 
-from collective.feedback.interfaces import ICollectiveFeedbackStore
+import logging
+import six
+
 
 logger = logging.getLogger(__name__)
 

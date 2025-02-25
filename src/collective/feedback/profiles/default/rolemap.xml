@@ -17,16 +17,22 @@
       <role name="Site Administrator" />
     </permission>
 
-    <permission acquire="True" name="collective.feedback: Feedbacks Overview">
+    <permission acquire="True"
+                name="collective.feedback: Feedbacks Overview"
+    >
       <role name="Authenticated" />
     </permission>
 
-    <permission acquire="True" name="collective.feedback: Show Deleted Feedbacks">
+    <permission acquire="True"
+                name="collective.feedback: Show Deleted Feedbacks"
+    >
       <role name="Manager" />
       <role name="Site Administrator" />
     </permission>
 
-    <permission acquire="True" name="collective.feedback: Update Feedbacks">
+    <permission acquire="True"
+                name="collective.feedback: Update Feedbacks"
+    >
       <role name="Manager" />
       <role name="Site Administrator" />
     </permission>

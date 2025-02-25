@@ -1,3 +1,4 @@
+from collective.feedback.interfaces import ICollectiveFeedbackStore
 from plone import api
 from plone.protect.interfaces import IDisableCSRFProtection
 from plone.restapi.deserializer import json_body
@@ -6,7 +7,7 @@ from zExceptions import BadRequest
 from zope.component import getUtility
 from zope.interface import alsoProvides
 
-from collective.feedback.interfaces import ICollectiveFeedbackStore
+import re
 
 
 class FeedbackAdd(Service):
@@ -48,18 +49,23 @@ class FeedbackAdd(Service):
         """
         check all required fields and parameters
         """
-        for field in ["vote"]:
+        for field in ["vote", "content"]:
             value = form_data.get(field, "")
             if not value:
                 raise BadRequest("Campo obbligatorio mancante: {}".format(field))
 
-    def extract_data(self, form_data):
-        context_state = api.content.get_view(
-            context=self.context,
-            request=self.request,
-            name="plone_context_state",
+    def looks_like_path(self, string):
+        return bool(
+            re.match(r"^(?:[A-Za-z]:\\|/)?(?:[^<>:\"|?*]+[/\\])[^<>:\"|?*]+$", string)
         )
-        context = context_state.canonical_object()
-        form_data.update({"uid": context.UID()})
-        form_data.update({"title": context.Title()})
+
+    def extract_data(self, form_data):
+        path = form_data.pop("content")
+        if self.looks_like_path(path):
+            context = api.content.get(path=path)
+            form_data.update({"uid": context.UID()})
+            form_data.update({"title": context.Title()})
+        else:
+            form_data.update({"title": path})
+
         return form_data
