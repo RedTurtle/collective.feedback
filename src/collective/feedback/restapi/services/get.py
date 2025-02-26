@@ -13,6 +13,7 @@ from zope.interface import implementer
 from zope.publisher.interfaces import IPublishTraverse
 
 import csv
+import uuid
 
 
 DEFAULT_SORT_KEY = "date"
@@ -175,12 +176,21 @@ class FeedbackGet(Service):
             vote = feedback._attrs.get("vote", "")
 
             if uid not in feedbacks:
-                obj = self.get_commented_obj(uid=uid)
-                if not obj and not api.user.has_permission(
-                    "collective.feedback: Show Deleted Feedbacks"
-                ):
-                    # only manager can list deleted object's reviews
-                    continue
+                try:
+                    uuid.UUID(uid)
+                    valid_uuid = True
+                except ValueError:
+                    valid_uuid = False
+
+                obj = None
+                if valid_uuid:
+                    obj = self.get_commented_obj(uid=uid)
+                    if not obj and not api.user.has_permission(
+                        "collective.feedback: Show Deleted Feedbacks"
+                    ):
+                        # only manager can list deleted object's reviews
+                        continue
+
                 new_data = {
                     "vote_num": 0,
                     "vote_sum": 0,
