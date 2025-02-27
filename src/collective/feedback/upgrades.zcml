@@ -47,4 +47,14 @@
         handler=".upgrades.update_rolemap"
         />
   </genericsetup:upgradeSteps>
+  <genericsetup:upgradeSteps
+      profile="collective.feedback:default"
+      source="1202"
+      destination="1203"
+      >
+    <genericsetup:upgradeStep
+        title="Add feedback controlpanel"
+        handler=".upgrades.update_registry"
+        />
+  </genericsetup:upgradeSteps>
 </configure>

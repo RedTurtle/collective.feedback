@@ -1,3 +1,4 @@
+from collective.feedback.controlpanels.settings import ICollectiveFeedbackSettings
 from collective.feedback.interfaces import ICollectiveFeedbackStore
 from plone import api
 from plone.protect.interfaces import IDisableCSRFProtection
@@ -67,6 +68,14 @@ class FeedbackAdd(Service):
             form_data.update({"uid": context.UID()})
             form_data.update({"title": context.Title()})
         else:
+            allowed_view = api.portal.get_registry_record(
+                "allowed_feedback_view",
+                interface=ICollectiveFeedbackSettings,
+                default=False,
+            )
+            if path not in allowed_view:
+                raise BadRequest(f"View non consentita: {path}")
+
             form_data.update({"title": path})
 
         return form_data

@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<object xmlns:i18n="http://xml.zope.org/namespaces/i18n"
+        name="portal_controlpanel"
+        i18n:domain="collective.feedback"
+>
+  <configlet action_id="CollectiveFeedbackSettings"
+             appId="collective.feedback.settings"
+             category="Products"
+             condition_expr=""
+             icon_expr=""
+             title="Impostazioni Collective Feedback"
+             url_expr="string:${portal_url}/@@collective-feedback-settings"
+             visible="True"
+             i18n:attributes="title"
+  >
+    <permission>Manage portal</permission>
+  </configlet>
+</object>

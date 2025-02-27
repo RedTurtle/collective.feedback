@@ -54,4 +54,10 @@
       name="@feedback-list"
       />
 
+  <adapter
+      factory=".controlpanels.CollectiveFeedbackSettings"
+      provides="collective.feedback.controlpanels.settings.ICollectiveFeedbackSettingsControlpanel"
+      name="collective-feedback-settings"
+      />
+
 </configure>

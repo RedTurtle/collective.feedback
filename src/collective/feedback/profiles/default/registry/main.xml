@@ -4,5 +4,6 @@
 >
 
   <!-- -*- extra stuff goes here -*- -->
+  <records interface="collective.feedback.controlpanels.settings.ICollectiveFeedbackSettings" />
 
 </registry>

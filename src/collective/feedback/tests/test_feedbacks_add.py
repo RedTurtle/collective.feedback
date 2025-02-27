@@ -146,3 +146,33 @@ class TestAdd(unittest.TestCase):
             json={"vote": "ok", "honey": "i'm a bot", "content": self.document_path},
         )
         self.assertEqual(res.status_code, 403)
+
+    def test_add_feedback_to_allowed_and_disallowed_views(self):
+        # Aggiunta di un feedback in una vista consentita
+        res = self.anon_api_session.post(
+            self.url,
+            json={
+                "vote": 5,
+                "comment": "Great login experience",
+                "honey": "",
+                "content": "login",
+            },
+        )
+        self.assertEqual(res.status_code, 204)
+        transaction.commit()
+        tool = getUtility(ICollectiveFeedbackStore)
+        self.assertEqual(len(tool.search(query={"title": "login"})), 1)
+
+        # Aggiunta di un feedback in una vista non consentita
+        res = self.anon_api_session.post(
+            self.url,
+            json={
+                "vote": 5,
+                "comment": "Great admin experience",
+                "honey": "",
+                "content": "admin",
+            },
+        )
+        self.assertEqual(res.status_code, 400)
+        transaction.commit()
+        self.assertEqual(len(tool.search(query={"title": "admin"})), 0)
