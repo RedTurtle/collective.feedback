@@ -31,10 +31,16 @@ class TestAdd(unittest.TestCase):
         self.document = api.content.create(
             title="Document", container=self.portal, type="Document"
         )
+        self.document_path = self.document.absolute_url_path().replace(
+            self.portal.absolute_url_path(), ""
+        )
         api.content.transition(obj=self.document, transition="publish")
 
         self.private_document = api.content.create(
             title="restricted document", container=self.portal, type="Document"
+        )
+        self.private_document_path = self.private_document.absolute_url_path().replace(
+            self.portal.absolute_url_path(), ""
         )
         transaction.commit()
 
@@ -44,10 +50,7 @@ class TestAdd(unittest.TestCase):
         self.anon_api_session = RelativeSession(self.portal_url)
         self.anon_api_session.headers.update({"Accept": "application/json"})
 
-        self.url = "{}/@feedback-add".format(self.document.absolute_url())
-        self.url_private_document = "{}/@feedback-add".format(
-            self.private_document.absolute_url()
-        )
+        self.url = "{}/@feedback-add".format(self.portal_url)
 
     def tearDown(self):
         self.api_session.close()
@@ -63,7 +66,12 @@ class TestAdd(unittest.TestCase):
     def test_correctly_save_data(self):
         self.anon_api_session.post(
             self.url,
-            json={"vote": 3, "comment": "i disagree", "honey": ""},
+            json={
+                "vote": 3,
+                "comment": "i disagree",
+                "honey": "",
+                "content": self.document_path,
+            },
         )
         transaction.commit()
         tool = getUtility(ICollectiveFeedbackStore)
@@ -71,12 +79,31 @@ class TestAdd(unittest.TestCase):
 
         # Anonymous cannot vote without access to document
         self.anon_api_session.post(
-            self.url_private_document,
-            json={"vote": 2, "comment": "i disagree", "honey": ""},
+            self.url,
+            json={
+                "vote": 2,
+                "comment": "i disagree",
+                "honey": "",
+                "content": self.private_document_path,
+            },
         )
         transaction.commit()
         # Number of results did not increase, cause user is unauthorized to vote
         self.assertEqual(len(tool.search()), 1)
+
+    def test_add_feedback_to_view(self):
+        self.anon_api_session.post(
+            self.url,
+            json={
+                "vote": 5,
+                "comment": "Great login experience",
+                "honey": "",
+                "content": "login",
+            },
+        )
+        transaction.commit()
+        tool = getUtility(ICollectiveFeedbackStore)
+        self.assertEqual(len(tool.search(query={"title": "login"})), 1)
 
     def test_store_only_known_fields(self):
         self.anon_api_session.post(
@@ -86,6 +113,7 @@ class TestAdd(unittest.TestCase):
                 "comment": "i disagree",
                 "unknown": "mistery",
                 "honey": "",
+                "content": self.document_path,
             },
         )
         transaction.commit()
@@ -97,19 +125,24 @@ class TestAdd(unittest.TestCase):
         self.assertEqual(res[0]._attrs.get("comment", None), "i disagree")
 
     def test_honeypot_is_required(self):
-        res = self.anon_api_session.post(self.url, json={})
+        res = self.anon_api_session.post(self.url, json={"content": self.document_path})
         self.assertEqual(res.status_code, 403)
 
-        res = self.anon_api_session.post(self.url, json={"vote": "ok"})
+        res = self.anon_api_session.post(
+            self.url, json={"vote": "ok", "content": self.document_path}
+        )
         self.assertEqual(res.status_code, 403)
 
         # HONEYPOT_FIELD is set in testing.py
 
-        res = self.anon_api_session.post(self.url, json={"vote": "ok", "honey": ""})
+        res = self.anon_api_session.post(
+            self.url, json={"vote": "ok", "honey": "", "content": self.document_path}
+        )
         self.assertEqual(res.status_code, 204)
 
         # this is compiled by a bot
         res = self.anon_api_session.post(
-            self.url, json={"vote": "ok", "honey": "i'm a bot"}
+            self.url,
+            json={"vote": "ok", "honey": "i'm a bot", "content": self.document_path},
         )
         self.assertEqual(res.status_code, 403)

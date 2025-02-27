@@ -32,6 +32,7 @@ output.xml
 pip-selfcheck.json
 pyvenv.cfg
 report.html
+.idea/
 .vscode/
 .tox/
 reports/

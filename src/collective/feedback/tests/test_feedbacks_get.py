@@ -201,7 +201,7 @@ class TestGet(unittest.TestCase):
             vote=1,
             date=now,
             comment="ok for deleted content",
-            uid="qwertyuiop",
+            uid="1d94d41bc1a441f8bbb9ae547131be0d",
         )
 
         response = self.api_session.get(self.url)
