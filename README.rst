@@ -21,6 +21,7 @@ collective.feedback
 ===================
 
 Feedback mechanism integration for volto.
+Requires volto-feedback >= 0.6.0
 
 Users can add vote and a comment to every page on the site.
 
@@ -45,6 +46,7 @@ There are two new specific permission:
 
 - collective.feedback.ManageFeedbacks (collective.feedback: Manage Feedbacks) Allows to reset data (by default Manager and Site Administrator).
 - collective.feedback.AccessFeedbacks (collective.feedback: Access Feedbacks) Allows users to list feedbacks on contents where they have that permission (by default Editor, Manager and Site Administrator)
+- collective.feedback.ShowDeletedFeedbacks (collective.feedback: Show Deleted Feedbacks) Allows manager to see feedbacks of deleted objects
 
 Feedbacks catalog
 =================

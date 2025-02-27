@@ -5,7 +5,7 @@ Changelog
 1.1.6 (unreleased)
 ------------------
 
-- Nothing changed yet.
+- Feedback can now also be added for non-content paths. (Breaking) [eikichi18]
 
 
 1.1.5 (2024-11-07)
