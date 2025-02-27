@@ -233,17 +233,13 @@ class FeedbackGet(Service):
         has_undread = query.get("has_unread", None)
 
         if has_undread in ("true", "false"):
-            has_undread = (
-                not (has_undread == "false") and has_undread == "true"
-            )
+            has_undread = not (has_undread == "false") and has_undread == "true"
         else:
             has_undread = None
 
         for uid, feedback in feedbacks.items():
             # avg calculation
-            feedback["vote"] = feedback.pop("vote_sum") / feedback.pop(
-                "vote_num"
-            )
+            feedback["vote"] = feedback.pop("vote_sum") / feedback.pop("vote_num")
 
             # Use has_unread filter
             if has_undread is not None:
@@ -281,9 +277,7 @@ class FeedbackGetCSV(FeedbackGet):
                         message="Unable export. Contact site manager.",
                     )
                 )
-        self.request.response.setHeader(
-            "Content-Type", "text/comma-separated-values"
-        )
+        self.request.response.setHeader("Content-Type", "text/comma-separated-values")
         now = datetime.now()
         self.request.response.setHeader(
             "Content-Disposition",

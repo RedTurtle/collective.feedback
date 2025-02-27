@@ -6,6 +6,7 @@ from plone.restapi.services import Service
 from zExceptions import BadRequest
 from zope.component import getUtility
 from zope.interface import alsoProvides
+
 import re
 
 
@@ -51,9 +52,7 @@ class FeedbackAdd(Service):
         for field in ["vote", "content"]:
             value = form_data.get(field, "")
             if not value:
-                raise BadRequest(
-                    "Campo obbligatorio mancante: {}".format(field)
-                )
+                raise BadRequest("Campo obbligatorio mancante: {}".format(field))
 
     def looks_like_path(self, string):
         return bool(re.match(r"^(/|/[^\s<>:\"|?*]+.*)$", string))
