@@ -155,6 +155,16 @@ class FeedbackGet(Service):
 
         return feedbacks
 
+    def sort_result(self, result):
+        # sort
+        sort_on = self.request.form.get("sort_on", "last_vote")
+        sort_order = self.request.form.get("sort_order", "desc")
+        reverse = sort_order.lower() in ["desc", "descending", "reverse"]
+        if sort_on in ["vote", "title", "last_vote", "comments"]:
+            result = sorted(result, key=lambda k: k[sort_on], reverse=reverse)
+
+        return result
+
     def get_data(self):
         tool = getUtility(ICollectiveFeedbackStore)
         feedbacks = {}
@@ -251,14 +261,7 @@ class FeedbackGet(Service):
 
         result = list(feedbacks.values())
 
-        # sort
-        sort_on = self.request.form.get("sort_on", "last_vote")
-        sort_order = self.request.form.get("sort_order", "desc")
-        reverse = sort_order.lower() in ["desc", "descending", "reverse"]
-        if sort_on in ["vote", "title", "last_vote", "comments"]:
-            result = sorted(result, key=lambda k: k[sort_on], reverse=reverse)
-
-        return result
+        return self.sort_result(result)
 
 
 class FeedbackGetCSV(FeedbackGet):
