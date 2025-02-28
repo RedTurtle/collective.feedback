@@ -56,5 +56,9 @@
         title="Add feedback controlpanel"
         handler=".upgrades.update_registry"
         />
+    <genericsetup:upgradeStep
+        title="Update feedback controlpanel"
+        handler=".upgrades.update_controlpanel"
+        />
   </genericsetup:upgradeSteps>
 </configure>
