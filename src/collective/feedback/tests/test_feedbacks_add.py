@@ -155,7 +155,7 @@ class TestAdd(unittest.TestCase):
                 "vote": 5,
                 "comment": "Great login experience",
                 "honey": "",
-                "content": "login",
+                "content": "Login/Logout",
             },
         )
         self.assertEqual(res.status_code, 204)
