@@ -2,7 +2,7 @@ Changelog
 =========
 
 
-1.1.6 (unreleased)
+1.2.0 (unreleased)
 ------------------
 
 - Feedback can now also be added for non-content paths. (Breaking) [eikichi18]
