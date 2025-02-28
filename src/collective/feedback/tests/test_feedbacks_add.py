@@ -92,18 +92,19 @@ class TestAdd(unittest.TestCase):
         self.assertEqual(len(tool.search()), 1)
 
     def test_add_feedback_to_view(self):
+        allowed_view = "Login/Logout"
         self.anon_api_session.post(
             self.url,
             json={
                 "vote": 5,
                 "comment": "Great login experience",
                 "honey": "",
-                "content": "login",
+                "content": allowed_view,
             },
         )
         transaction.commit()
         tool = getUtility(ICollectiveFeedbackStore)
-        self.assertEqual(len(tool.search(query={"title": "login"})), 1)
+        self.assertEqual(len(tool.search(query={"title": allowed_view})), 1)
 
     def test_store_only_known_fields(self):
         self.anon_api_session.post(
