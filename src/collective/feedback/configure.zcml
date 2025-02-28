@@ -11,6 +11,7 @@
   <include file="permissions.zcml" />
   <include file="upgrades.zcml" />
 
+  <include package=".controlpanels" />
   <include package=".storage" />
   <include package=".restapi" />
 

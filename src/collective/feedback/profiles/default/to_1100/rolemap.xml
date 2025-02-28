@@ -1,6 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <rolemap>
   <permissions>
-    <permission remove="True" name="collective.feedback: Manage Feedbacks" />
+    <permission name="collective.feedback: Manage Feedbacks"
+                remove="True"
+    />
   </permissions>
 </rolemap>

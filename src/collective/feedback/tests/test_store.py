@@ -1,12 +1,12 @@
 # -*- coding: utf-8 -*-
-import unittest
-
-import transaction
-from plone.app.testing import TEST_USER_ID, setRoles
-from zope.component import getUtility
-
 from collective.feedback.interfaces import ICollectiveFeedbackStore
 from collective.feedback.testing import FUNCTIONAL_TESTING
+from plone.app.testing import setRoles
+from plone.app.testing import TEST_USER_ID
+from zope.component import getUtility
+
+import transaction
+import unittest
 
 
 class TestTool(unittest.TestCase):

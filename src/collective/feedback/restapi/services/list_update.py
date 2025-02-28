@@ -1,11 +1,11 @@
+from collective.feedback.interfaces import ICollectiveFeedbackStore
 from plone.protect.interfaces import IDisableCSRFProtection
 from plone.restapi.deserializer import json_body
 from plone.restapi.services import Service
-from zExceptions import BadRequest, NotFound
+from zExceptions import BadRequest
+from zExceptions import NotFound
 from zope.component import getUtility
 from zope.interface import alsoProvides
-
-from collective.feedback.interfaces import ICollectiveFeedbackStore
 
 
 class FeedbacListkUpdate(Service):

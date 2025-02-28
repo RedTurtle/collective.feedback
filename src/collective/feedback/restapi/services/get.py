@@ -1,8 +1,7 @@
-import csv
+from AccessControl import Unauthorized
+from collective.feedback.interfaces import ICollectiveFeedbackStore
 from copy import deepcopy
 from datetime import datetime
-
-from AccessControl import Unauthorized
 from plone import api
 from plone.restapi.batching import HypermediaBatch
 from plone.restapi.search.utils import unflatten_dotted_dict
@@ -13,7 +12,9 @@ from zope.component import getUtility
 from zope.interface import implementer
 from zope.publisher.interfaces import IPublishTraverse
 
-from collective.feedback.interfaces import ICollectiveFeedbackStore
+import csv
+import uuid
+
 
 DEFAULT_SORT_KEY = "date"
 
@@ -119,32 +120,50 @@ class FeedbackGet(Service):
 
         return obj
 
-    def get_single_object_feedbacks(self, uid):
+    def get_single_object_feedbacks(self, search_value):
         """
         Return data for single object
         """
-        commented_object = self.get_commented_obj(uid=uid)
+        results = []
+        commented_object = self.get_commented_obj(uid=search_value)
         if not commented_object:
-            return []
-        tool = getUtility(ICollectiveFeedbackStore)
-        results = tool.search(query={"uid": uid})
-        feedbacks = []
+            tool = getUtility(ICollectiveFeedbackStore)
+            results = tool.search(query={"title": search_value})
+            title = search_value
+        else:
+            tool = getUtility(ICollectiveFeedbackStore)
+            results = tool.search(query={"uid": search_value})
+            title = commented_object.title
 
+        if not results:
+            return results
+
+        feedbacks = []
         for record in results:
             feedbacks.append(
                 {
-                    "uid": uid,
+                    "uid": record._attrs.get("uid", ""),
                     "date": record._attrs.get("date", ""),
                     "vote": record._attrs.get("vote", ""),
                     "answer": record._attrs.get("answer", ""),
                     "comment": record._attrs.get("comment", ""),
-                    "title": commented_object.title,
+                    "title": title,
                     "id": record.intid,
                     "read": record._attrs.get("read", ""),
                 }
             )
 
         return feedbacks
+
+    def sort_result(self, result):
+        # sort
+        sort_on = self.request.form.get("sort_on", "last_vote")
+        sort_order = self.request.form.get("sort_order", "desc")
+        reverse = sort_order.lower() in ["desc", "descending", "reverse"]
+        if sort_on in ["vote", "title", "last_vote", "comments"]:
+            result = sorted(result, key=lambda k: k[sort_on], reverse=reverse)
+
+        return result
 
     def get_data(self):
         tool = getUtility(ICollectiveFeedbackStore)
@@ -159,16 +178,29 @@ class FeedbackGet(Service):
 
         for feedback in query_res:
             uid = feedback._attrs.get("uid", "")
+            # Some feedbacks are views, so no uid, use title
+            # it should be unique
+            if not uid:
+                uid = feedback._attrs.get("title", "")
             date = feedback._attrs.get("date", "")
             vote = feedback._attrs.get("vote", "")
 
             if uid not in feedbacks:
-                obj = self.get_commented_obj(uid=uid)
-                if not obj and not api.user.has_permission(
-                    "collective.feedback: Show Deleted Feedbacks"
-                ):
-                    # only manager can list deleted object's reviews
-                    continue
+                try:
+                    uuid.UUID(uid)
+                    valid_uuid = True
+                except ValueError:
+                    valid_uuid = False
+
+                obj = None
+                if valid_uuid:
+                    obj = self.get_commented_obj(uid=uid)
+                    if not obj and not api.user.has_permission(
+                        "collective.feedback: Show Deleted Feedbacks"
+                    ):
+                        # only manager can list deleted object's reviews
+                        continue
+
                 new_data = {
                     "vote_num": 0,
                     "vote_sum": 0,
@@ -229,14 +261,7 @@ class FeedbackGet(Service):
 
         result = list(feedbacks.values())
 
-        # sort
-        sort_on = self.request.form.get("sort_on", "last_vote")
-        sort_order = self.request.form.get("sort_order", "desc")
-        reverse = sort_order.lower() in ["desc", "descending", "reverse"]
-        if sort_on in ["vote", "title", "last_vote", "comments"]:
-            result = sorted(result, key=lambda k: k[sort_on], reverse=reverse)
-
-        return result
+        return self.sort_result(result)
 
 
 class FeedbackGetCSV(FeedbackGet):
@@ -281,8 +306,6 @@ class FeedbackGetCSV(FeedbackGet):
         for item in tool.search():
             uid = item._attrs.get("uid", "")
             obj = self.get_commented_obj(uid=uid)
-            if not obj:
-                continue
 
             data = {}
             for k, v in item.attrs.items():
@@ -298,7 +321,7 @@ class FeedbackGetCSV(FeedbackGet):
                 val = json_compatible(v)
                 data[k] = val
 
-            data["url"] = self.plone2volto(obj.absolute_url())
+            data["url"] = self.plone2volto(obj.absolute_url()) if obj else ""
             rows.append(data)
 
         writer = csv.DictWriter(sbuf, fieldnames=columns, delimiter=",")

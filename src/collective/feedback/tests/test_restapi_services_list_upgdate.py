@@ -1,19 +1,16 @@
 # -*- coding: utf-8 -*-
-import unittest
-
-import transaction
+from collective.feedback.interfaces import ICollectiveFeedbackStore
+from collective.feedback.testing import RESTAPI_TESTING
 from plone import api
-from plone.app.testing import (
-    SITE_OWNER_NAME,
-    SITE_OWNER_PASSWORD,
-    TEST_USER_ID,
-    setRoles,
-)
+from plone.app.testing import setRoles
+from plone.app.testing import SITE_OWNER_NAME
+from plone.app.testing import SITE_OWNER_PASSWORD
+from plone.app.testing import TEST_USER_ID
 from plone.restapi.testing import RelativeSession
 from zope.component import getUtility
 
-from collective.feedback.interfaces import ICollectiveFeedbackStore
-from collective.feedback.testing import RESTAPI_TESTING
+import transaction
+import unittest
 
 
 class TestAdd(unittest.TestCase):
@@ -23,6 +20,7 @@ class TestAdd(unittest.TestCase):
         self.app = self.layer["app"]
         self.portal = self.layer["portal"]
         self.portal_url = self.portal.absolute_url()
+        self.portal_url_path = self.portal.absolute_url_path()
         setRoles(self.portal, TEST_USER_ID, ["Manager"])
 
         api.user.create(
@@ -47,9 +45,12 @@ class TestAdd(unittest.TestCase):
         self.anon_api_session = RelativeSession(self.portal_url)
         self.anon_api_session.headers.update({"Accept": "application/json"})
 
-        self.url = "{}/@feedback-add".format(self.document.absolute_url())
-        self.url_private_document = "{}/@feedback-add".format(
-            self.private_document.absolute_url()
+        self.url = "{}/@feedback-add".format(self.portal_url)
+        self.document_path = self.document.absolute_url_path().replace(
+            self.portal.absolute_url_path(), ""
+        )
+        self.private_document_path = self.private_document.absolute_url_path().replace(
+            self.portal.absolute_url_path(), ""
         )
 
     def tearDown(self):
@@ -59,11 +60,21 @@ class TestAdd(unittest.TestCase):
     def test_correctly_update_data(self):
         self.anon_api_session.post(
             self.url,
-            json={"vote": 3, "comment": "i disagree", "honey": ""},
+            json={
+                "vote": 3,
+                "comment": "i disagree",
+                "honey": "",
+                "content": self.document_path,
+            },
         )
         self.anon_api_session.post(
             self.url,
-            json={"vote": 2, "comment": "i disagree", "honey": ""},
+            json={
+                "vote": 2,
+                "comment": "i disagree",
+                "honey": "",
+                "content": self.document_path,
+            },
         )
         transaction.commit()
         tool = getUtility(ICollectiveFeedbackStore)
@@ -72,7 +83,7 @@ class TestAdd(unittest.TestCase):
         self.assertEqual(len(feedbacks), 2)
 
         self.api_session.patch(
-            api.portal.get().absolute_url() + "/@feedback-list",
+            self.portal_url + "/@feedback-list",
             json={str(feedbacks[0].intid): {"read": True}},
         )
         transaction.commit()
@@ -82,7 +93,12 @@ class TestAdd(unittest.TestCase):
     def test_unknown_id(self):
         self.anon_api_session.post(
             self.url,
-            json={"vote": 3, "comment": "i disagree", "honey": ""},
+            json={
+                "vote": 3,
+                "comment": "i disagree",
+                "honey": "",
+                "content": self.document_path,
+            },
         )
         transaction.commit()
 
@@ -92,7 +108,7 @@ class TestAdd(unittest.TestCase):
         self.assertEqual(len(feedbacks), 1)
 
         resp = self.api_session.patch(
-            api.portal.get().absolute_url() + "/@feedback-list",
+            self.portal_url + "/@feedback-list",
             json={"1111111111": {"read": True}},
         )
 
@@ -103,7 +119,12 @@ class TestAdd(unittest.TestCase):
     def test_bad_id(self):
         self.anon_api_session.post(
             self.url,
-            json={"vote": 3, "comment": "i disagree", "honey": ""},
+            json={
+                "vote": 3,
+                "comment": "i disagree",
+                "honey": "",
+                "content": self.document_path,
+            },
         )
         transaction.commit()
 
@@ -113,7 +134,7 @@ class TestAdd(unittest.TestCase):
         self.assertEqual(len(feedbacks), 1)
 
         resp = self.api_session.patch(
-            api.portal.get().absolute_url() + "/@feedback-list",
+            self.portal_url + "/@feedback-list",
             json={"fffffffff": {"read": True}},
         )
 

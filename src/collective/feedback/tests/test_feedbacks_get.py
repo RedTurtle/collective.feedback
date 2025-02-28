@@ -1,22 +1,20 @@
 # -*- coding: utf-8 -*-
-import unittest
-from datetime import datetime
-
-import transaction
-from plone import api
-from plone.app.testing import (
-    SITE_OWNER_NAME,
-    SITE_OWNER_PASSWORD,
-    TEST_USER_ID,
-    setRoles,
-)
-from plone.restapi.serializer.converters import json_compatible
-from plone.restapi.testing import RelativeSession
-from souper.soup import Record, get_soup
-from zope.component import getUtility
-
 from collective.feedback.interfaces import ICollectiveFeedbackStore
 from collective.feedback.testing import RESTAPI_TESTING
+from datetime import datetime
+from plone import api
+from plone.app.testing import setRoles
+from plone.app.testing import SITE_OWNER_NAME
+from plone.app.testing import SITE_OWNER_PASSWORD
+from plone.app.testing import TEST_USER_ID
+from plone.restapi.serializer.converters import json_compatible
+from plone.restapi.testing import RelativeSession
+from souper.soup import get_soup
+from souper.soup import Record
+from zope.component import getUtility
+
+import transaction
+import unittest
 
 
 class TestGet(unittest.TestCase):
@@ -203,7 +201,7 @@ class TestGet(unittest.TestCase):
             vote=1,
             date=now,
             comment="ok for deleted content",
-            uid="qwertyuiop",
+            uid="1d94d41bc1a441f8bbb9ae547131be0d",
         )
 
         response = self.api_session.get(self.url)
