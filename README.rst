@@ -66,6 +66,7 @@ Add a vote
 - Method ``add``
 - Parameters: ``data`` (dictionary with parameters)
 - Response: unique-id of new record
+- Context: only the navigation root
 
 ``data`` should be a dictionary with the following parameters:
 
@@ -74,6 +75,7 @@ Add a vote
 - answer: a custom string, like a comment
 - title: the title of the Plone content
 - comment: an optional comment
+- content: path of the object or name of the view
 
 Others parameters will be ignored.
 

@@ -8,7 +8,7 @@
              category="Products"
              condition_expr=""
              icon_expr=""
-             title="Impostazioni Collective Feedback"
+             title="Collective Feedback"
              url_expr="string:${portal_url}/@@collective-feedback-settings"
              visible="True"
              i18n:attributes="title"

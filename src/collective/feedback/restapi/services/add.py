@@ -64,6 +64,8 @@ class FeedbackAdd(Service):
             portal = api.portal.get()
             contextual_path = "/" + portal.id + path
             context = api.content.get(path=contextual_path)
+            if not context:
+                raise BadRequest(f"Object with path {contextual_path} not found.")
 
             form_data.update({"uid": context.UID()})
             form_data.update({"title": context.Title()})
