@@ -19,7 +19,21 @@ class ICollectiveFeedbackSettings(Interface):
             default="Vista su cui è possibile lasciare dei feedback",
         ),
         required=True,
-        default=["login", "search"],
+        default=[
+            "Login/Logout",
+            "Ricerca",
+            "Search",
+            "Le mie prenotazioni",
+            "My bookings",
+            "Prenotazione appuntamento",
+            "Appointment booking",
+            "Export appuntamenti",
+            "Export bookings",
+            "Area personale",
+            "Personal area",
+            "Area operatore",
+            "Operator area",
+        ],
         value_type=TextLine(),
     )
 
