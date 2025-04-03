@@ -20,6 +20,11 @@ class FeedbackAdd(Service):
 
     def reply(self):
         alsoProvides(self.request, IDisableCSRFProtection)
+        self.allowed_views = api.portal.get_registry_record(
+            "allowed_feedback_view",
+            interface=ICollectiveFeedbackSettings,
+            default=False,
+        )
         form_data = json_body(self.request)
         self.validate_form(form_data=form_data)
         data = self.extract_data(form_data=form_data)
@@ -55,29 +60,26 @@ class FeedbackAdd(Service):
             if not value:
                 raise BadRequest("Campo obbligatorio mancante: {}".format(field))
 
-    def looks_like_path(self, string):
-        return bool(re.match(r"^(/|/[^\s<>:\"|?*]+.*)$", string))
+    def check_allowed_views(self, value):
+        if value in self.allowed_views:
+            return True
+        for allowed_view in self.allowed_views:
+            if value.startswith(allowed_view + "/"):
+                return True
+        return False
 
     def extract_data(self, form_data):
         path = form_data.pop("content")
-        if self.looks_like_path(path):
+
+        if self.check_allowed_views(path):
+            form_data.update({"title": path})
+        else:
             portal = api.portal.get()
             contextual_path = "/" + portal.id + path
             context = api.content.get(path=contextual_path)
-            if not context:
-                raise BadRequest(f"Object with path {contextual_path} not found.")
-
-            form_data.update({"uid": context.UID()})
-            form_data.update({"title": context.Title()})
-        else:
-            allowed_view = api.portal.get_registry_record(
-                "allowed_feedback_view",
-                interface=ICollectiveFeedbackSettings,
-                default=False,
-            )
-            if path not in allowed_view:
-                raise BadRequest(f"View non consentita: {path}")
-
-            form_data.update({"title": path})
-
+            if context:
+                form_data.update({"uid": context.UID()})
+                form_data.update({"title": context.Title()})
+            else:
+                raise BadRequest(f"Object with path {path} not found.")
         return form_data
