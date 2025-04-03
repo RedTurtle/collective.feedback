@@ -229,3 +229,17 @@ class TestAdd(unittest.TestCase):
 
         tool = getUtility(ICollectiveFeedbackStore)
         self.assertEqual(len(tool.search(query={"title": "/my-path/foo"})), 1)
+
+        # Aggiunta di un feedback in una vista non consentita
+        res = self.anon_api_session.post(
+            self.url,
+            json={
+                "vote": 5,
+                "comment": "Great admin experience",
+                "honey": "",
+                "content": "/my-pathh",
+            },
+        )
+        self.assertEqual(res.status_code, 400)
+        transaction.commit()
+        self.assertEqual(len(tool.search(query={"title": "/my-pathh"})), 0)
