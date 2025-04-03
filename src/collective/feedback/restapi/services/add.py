@@ -8,8 +8,6 @@ from zExceptions import BadRequest
 from zope.component import getUtility
 from zope.interface import alsoProvides
 
-import re
-
 
 class FeedbackAdd(Service):
     """
