@@ -63,8 +63,12 @@ class FeedbackAdd(Service):
         if value in self.allowed_views:
             return True
         for allowed_view in self.allowed_views:
-            if looks_like_path(allowed_view) and value.startswith(allowed_view):
-                return True
+            if looks_like_path(allowed_view):
+                if allowed_view.endswith("/"):
+                    check_path = allowed_view
+                else:
+                    check_path = allowed_view + "/"
+                return value.startswith(check_path)
         return False
 
     def extract_data(self, form_data):
