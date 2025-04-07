@@ -1,5 +1,6 @@
 from collective.feedback.controlpanels.settings import ICollectiveFeedbackSettings
 from collective.feedback.interfaces import ICollectiveFeedbackStore
+from collective.feedback.restapi.services import looks_like_path
 from plone import api
 from plone.protect.interfaces import IDisableCSRFProtection
 from plone.restapi.deserializer import json_body
@@ -62,7 +63,7 @@ class FeedbackAdd(Service):
         if value in self.allowed_views:
             return True
         for allowed_view in self.allowed_views:
-            if value.startswith(allowed_view + "/"):
+            if looks_like_path(allowed_view) and value.startswith(allowed_view):
                 return True
         return False
 

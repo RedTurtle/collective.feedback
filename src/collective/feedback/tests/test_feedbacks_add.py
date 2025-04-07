@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
-from collective.feedback.interfaces import ICollectiveFeedbackStore
 from collective.feedback.controlpanels.settings import ICollectiveFeedbackSettings
+from collective.feedback.interfaces import ICollectiveFeedbackStore
 from collective.feedback.testing import RESTAPI_TESTING
 from plone import api
 from plone.app.testing import setRoles
@@ -183,7 +183,6 @@ class TestAdd(unittest.TestCase):
         self.assertEqual(len(tool.search(query={"title": not_allowed_view})), 0)
 
     def test_add_feedback_to_allowed_path_starts_with(self):
-
         allowed_views = api.portal.get_registry_record(
             "allowed_feedback_view",
             interface=ICollectiveFeedbackSettings,

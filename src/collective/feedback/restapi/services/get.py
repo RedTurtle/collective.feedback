@@ -1,5 +1,6 @@
 from AccessControl import Unauthorized
 from collective.feedback.interfaces import ICollectiveFeedbackStore
+from collective.feedback.restapi.services import looks_like_path
 from copy import deepcopy
 from datetime import datetime
 from plone import api
@@ -201,18 +202,25 @@ class FeedbackGet(Service):
                         # only manager can list deleted object's reviews
                         continue
 
+                title = feedback._attrs.get("title", "")
                 new_data = {
                     "vote_num": 0,
                     "vote_sum": 0,
                     "comments": 0,
-                    "title": feedback._attrs.get("title", ""),
                     "uid": uid,
+                    "title": title,
                 }
 
                 if obj:
                     new_data["title"] = obj.Title()
                     new_data["url"] = obj.absolute_url()
-
+                else:
+                    # it's a contextless feedback
+                    if looks_like_path(title):
+                        fixed_title = title.rstrip("/").rsplit("/", 1)[-1]
+                        fixed_title = fixed_title.replace("-", " ").capitalize()
+                        new_data["title"] = fixed_title
+                        new_data["url"] = title
                 feedbacks[uid] = new_data
 
             # vote avg
