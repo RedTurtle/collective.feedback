@@ -187,40 +187,10 @@ class FeedbackGet(Service):
             vote = feedback._attrs.get("vote", "")
 
             if uid not in feedbacks:
-                try:
-                    uuid.UUID(uid)
-                    valid_uuid = True
-                except ValueError:
-                    valid_uuid = False
-
-                obj = None
-                if valid_uuid:
-                    obj = self.get_commented_obj(uid=uid)
-                    if not obj and not api.user.has_permission(
-                        "collective.feedback: Show Deleted Feedbacks"
-                    ):
-                        # only manager can list deleted object's reviews
-                        continue
-
-                title = feedback._attrs.get("title", "")
-                new_data = {
-                    "vote_num": 0,
-                    "vote_sum": 0,
-                    "comments": 0,
-                    "uid": uid,
-                    "title": title,
-                }
-
-                if obj:
-                    new_data["title"] = obj.Title()
-                    new_data["url"] = obj.absolute_url()
-                else:
-                    # it's a contextless feedback
-                    if looks_like_path(title):
-                        fixed_title = title.rstrip("/").rsplit("/", 1)[-1]
-                        fixed_title = fixed_title.replace("-", " ").capitalize()
-                        new_data["title"] = fixed_title
-                        new_data["url"] = title
+                new_data = self.get_new_data(uid=uid, feedback=feedback)
+                if not new_data:
+                    # no data, skip
+                    continue
                 feedbacks[uid] = new_data
 
             # vote avg
@@ -270,6 +240,46 @@ class FeedbackGet(Service):
         result = list(feedbacks.values())
 
         return self.sort_result(result)
+
+    def get_new_data(self, uid, feedback):
+        """
+        Generate data for feedback entry
+        """
+        try:
+            uuid.UUID(uid)
+            valid_uuid = True
+        except ValueError:
+            valid_uuid = False
+
+        obj = None
+        if valid_uuid:
+            obj = self.get_commented_obj(uid=uid)
+            if not obj and not api.user.has_permission(
+                "collective.feedback: Show Deleted Feedbacks"
+            ):
+                # only manager can list deleted object's reviews
+                return None
+
+        title = feedback._attrs.get("title", "")
+        new_data = {
+            "vote_num": 0,
+            "vote_sum": 0,
+            "comments": 0,
+            "uid": uid,
+            "title": title,
+        }
+
+        if obj:
+            new_data["title"] = obj.Title()
+            new_data["url"] = obj.absolute_url()
+        else:
+            # it's a contextless feedback
+            if looks_like_path(title):
+                fixed_title = title.rstrip("/").rsplit("/", 1)[-1]
+                fixed_title = fixed_title.replace("-", " ").capitalize()
+                new_data["title"] = fixed_title
+                new_data["url"] = title
+        return new_data
 
 
 class FeedbackGetCSV(FeedbackGet):
