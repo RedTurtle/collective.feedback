@@ -5,7 +5,8 @@ Changelog
 1.2.1 (unreleased)
 ------------------
 
-- Nothing changed yet.
+- Fix logic for non-content paths: now can handle also paths that startw with a pattern.
+  [cekk]
 
 
 1.2.0 (2025-02-28)

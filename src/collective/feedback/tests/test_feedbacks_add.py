@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+from collective.feedback.controlpanels.settings import ICollectiveFeedbackSettings
 from collective.feedback.interfaces import ICollectiveFeedbackStore
 from collective.feedback.testing import RESTAPI_TESTING
 from plone import api
@@ -180,3 +181,64 @@ class TestAdd(unittest.TestCase):
         self.assertEqual(res.status_code, 400)
         transaction.commit()
         self.assertEqual(len(tool.search(query={"title": not_allowed_view})), 0)
+
+    def test_add_feedback_to_allowed_path_starts_with(self):
+        allowed_views = api.portal.get_registry_record(
+            "allowed_feedback_view",
+            interface=ICollectiveFeedbackSettings,
+            default=False,
+        )
+        allowed_views.append("/my-path")
+        api.portal.set_registry_record(
+            "allowed_feedback_view",
+            allowed_views,
+            interface=ICollectiveFeedbackSettings,
+        )
+
+        transaction.commit()
+
+        # Aggiunta di un feedback in una vista consentita
+        res = self.anon_api_session.post(
+            self.url,
+            json={
+                "vote": 5,
+                "comment": "Great login experience",
+                "honey": "",
+                "content": "/my-path",
+            },
+        )
+        self.assertEqual(res.status_code, 204)
+        transaction.commit()
+
+        tool = getUtility(ICollectiveFeedbackStore)
+        self.assertEqual(len(tool.search(query={"title": "/my-path"})), 1)
+
+        res = self.anon_api_session.post(
+            self.url,
+            json={
+                "vote": 5,
+                "comment": "Great admin experience",
+                "honey": "",
+                "content": "/my-path/foo",
+            },
+        )
+
+        self.assertEqual(res.status_code, 204)
+        transaction.commit()
+
+        tool = getUtility(ICollectiveFeedbackStore)
+        self.assertEqual(len(tool.search(query={"title": "/my-path/foo"})), 1)
+
+        # Aggiunta di un feedback in una vista non consentita
+        res = self.anon_api_session.post(
+            self.url,
+            json={
+                "vote": 5,
+                "comment": "Great admin experience",
+                "honey": "",
+                "content": "/my-pathh",
+            },
+        )
+        self.assertEqual(res.status_code, 400)
+        transaction.commit()
+        self.assertEqual(len(tool.search(query={"title": "/my-pathh"})), 0)
