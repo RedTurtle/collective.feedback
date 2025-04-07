@@ -60,9 +60,9 @@ class FeedbackAdd(Service):
                 raise BadRequest("Campo obbligatorio mancante: {}".format(field))
 
     def check_allowed_views(self, value):
-        if value in self.allowed_views:
-            return True
         for allowed_view in self.allowed_views:
+            if value == allowed_view:
+                return True
             if looks_like_path(allowed_view):
                 if allowed_view.endswith("/"):
                     check_path = allowed_view
